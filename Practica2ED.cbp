@@ -13,6 +13,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add directory="include" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -32,7 +33,16 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="include/Comun.h" />
+		<Unit filename="include/GestorServidores.h" />
+		<Unit filename="include/Servidor.h" />
+		<Unit filename="include/TADCola.h" />
+		<Unit filename="include/TADLista.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="src/GestorServidores.cpp" />
+		<Unit filename="src/Servidor.cpp" />
+		<Unit filename="src/TADCola.cpp" />
+		<Unit filename="src/TADLista.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
