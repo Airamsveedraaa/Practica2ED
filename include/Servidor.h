@@ -27,21 +27,21 @@ public:
     ~Servidor();
 
     Servidor(cadena dS, cadena nJ, int i, int mxL, int mxC, int p, cadena lG);
-    //método constructor que inicializa los atributos direccionServidor, nombreJuego, id,
-    //maxJugadoresConectados, maxJugadoresEnEspera, puerto y localizacionGeografica con,
-    //respectivamente, dS, nJ, i, mxL, mxC, p y lG. Además, inicializa el atributo estado a “INACTIVO”.
+    /*método constructor que inicializa los atributos direccionServidor, nombreJuego, id,
+    maxJugadoresConectados, maxJugadoresEnEspera, puerto y localizacionGeografica con,
+    respectivamente, dS, nJ, i, mxL, mxC, p y lG. Además, inicializa el atributo estado a “INACTIVO”.*/
 
     int getId();
-    //devuelve el valor del atributo id.
+    /*devuelve el valor del atributo id.*/
 
     void getDireccionServidor(cadena dS);
-    //devuelve el valor de direccionServidor a través del parámetro de entrada/salida dS.
+    /*devuelve el valor de direccionServidor a través del parámetro de entrada/salida dS.*/
 
     void setSiguienteServidor(Servidor *pS);
-    //asigna el valor recibido como parámetro al atributo siguienteServidor.
+    /*asigna el valor recibido como parámetro al atributo siguienteServidor.*/
 
     Servidor* getSiguienteServidor();
-    //devuelve el valor del atributo siguienteServidor.
+    /*devuelve el valor del atributo siguienteServidor.*/
 
     bool conectarJugador(Jugador j);
     //aloja al jugador j en el servidor, esto es, lo añade a la lista listaConectados siempre y cuando

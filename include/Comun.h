@@ -1,6 +1,7 @@
 #ifndef COMUN_H_INCLUDED
 #define COMUN_H_INCLUDED
 #include <iostream>
+#include <windows.h>
 #include <cstring>
 
 typedef char cadena [50];
