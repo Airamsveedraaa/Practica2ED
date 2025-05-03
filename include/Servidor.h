@@ -44,29 +44,29 @@ public:
     /*devuelve el valor del atributo siguienteServidor.*/
 
     bool conectarJugador(Jugador j);
-    //aloja al jugador j en el servidor, esto es, lo añade a la lista listaConectados siempre y cuando
-    //no se haya alcanzado el número máximo de jugadores. Devolverá true si el jugador finalmente es
-    //alojado en el servidor; false en caso contrario. Los jugadores se almacenan en la lista por
-    //puntuación ascendente, por lo que el jugador deberá ser añadido a aquella posición para la que
-    //se garantice el cumplimiento de esta regla de negocio.
+  /*aloja al jugador j en el servidor, esto es, lo añade a la lista listaConectados siempre y cuando
+    no se haya alcanzado el número máximo de jugadores. Devolverá true si el jugador finalmente es
+    alojado en el servidor; false en caso contrario. Los jugadores se almacenan en la lista por
+    puntuación ascendente, por lo que el jugador deberá ser añadido a aquella posición para la que
+    se garantice el cumplimiento de esta regla de negocio.*/
 
     bool ponerJugadorEnEspera(Jugador j);
-    //encola al jugador j en la cola de espera jugadoresEnEspera, comprobando previamente que el servidor
-    //ha alcanzado el número máximo de conexiones, y de que por otra parte no se ha alcanzado el número
-    //máximo de jugadores que pueden estar en espera para acceder al servidor. Devolverá true en caso de
-    //enconlar exitosamente al jugador; false en caso contrario.
+  /*encola al jugador j en la cola de espera jugadoresEnEspera, comprobando previamente que el servidor
+    ha alcanzado el número máximo de conexiones, y de que por otra parte no se ha alcanzado el número
+    máximo de jugadores que pueden estar en espera para acceder al servidor. Devolverá true en caso de
+    enconlar exitosamente al jugador; false en caso contrario.*/
 
     void mostrarJugadoresConectados();
-    //muestra por pantalla el nombre, el identificador numérico, el ping(latencia), la puntuación global
-    //y el país desde el que se conecta cada uno de los jugadores alojados en el servidor.
+  /*muestra por pantalla el nombre, el identificador numérico, el ping(latencia), la puntuación global
+    y el país desde el que se conecta cada uno de los jugadores alojados en el servidor.*/
 
     void mostrarJugadoresEnEspera();
-    //muestra por pantalla el nombre, el identificador numérico, el ping(latencia) y la puntuación global
-    //y el país desde el que se conecta cada uno de los jugadores que se encuentran esperando poder
-    //acceder al servidor.
+  /*muestra por pantalla el nombre, el identificador numérico, el ping(latencia) y la puntuación global
+    y el país desde el que se conecta cada uno de los jugadores que se encuentran esperando poder
+    acceder al servidor.*/
 
     bool estaActivo();
-    //devuelve true si el estado del servidor es ACTIVO; false en caso contrario.
+    /*devuelve true si el estado del servidor es ACTIVO; false en caso contrario.*/
 
     bool activar(); //activa un servidor en estado INACTIVO o MANTENIMIENTO. Si el servidor ya estaba
     //activado, el método devolverá false; true en caso contrario, confirmando así que el servidor ha

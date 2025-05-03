@@ -1,9 +1,22 @@
 #include "TADLista.h"
+
+
 lista::lista()
 {
     elementos=NULL;
     n=0;
 }
+
+
+lista::lista(Jugador e)
+{
+ elementos=new TNodo_Lista;
+ elementos->Datos=e;
+ elementos->Siguiente=NULL;
+ n=1;
+}
+
+
 lista::~lista()
 {
     TNodo_Lista *Nodo_Borr=elementos,*Nodo_Sig;
@@ -16,6 +29,8 @@ lista::~lista()
     elementos=NULL;
     n=0;
 }
+
+
 TNodo_Lista *lista::Anterior(int i)
 {
     TNodo_Lista *Nodo_Aux=elementos,*Nodo_Ant=NULL;
@@ -29,6 +44,8 @@ TNodo_Lista *lista::Anterior(int i)
         }
     return Nodo_Ant;
 };
+
+
 void lista::insertar(int i, Jugador e)
 {
     TNodo_Lista *Nodo_Aux=new TNodo_Lista, *Nodo_Ant;
@@ -50,6 +67,8 @@ void lista::insertar(int i, Jugador e)
         n++;
     }
 }
+
+
 void lista::eliminar(int i)
 {
     TNodo_Lista *Nodo_Ant,*Nodo_Aux;
@@ -68,6 +87,7 @@ void lista::eliminar(int i)
     n--;
 }
 
+
 void lista::modificar(int i, Jugador e)
 {
     TNodo_Lista *Nodo_Ant=Anterior(i),*Nodo_Aux;
@@ -77,6 +97,8 @@ void lista::modificar(int i, Jugador e)
         Nodo_Aux=Nodo_Ant->Siguiente;
     Nodo_Aux->Datos=e;
 }
+
+
 Jugador lista::observar(int i)
 {
     TNodo_Lista *Nodo_Ant=Anterior(i),*Nodo_Aux;
@@ -87,14 +109,19 @@ Jugador lista::observar(int i)
     return Nodo_Aux->Datos;
 }
 
+
 bool lista::esvacia ()
 {
  return (n == 0);
 }
+
+
 int lista::longitud ()
 {
  return n;
 }
+
+
 int lista::posicion(Jugador e)
 {
  TNodo_Lista *Nodo_Aux=elementos;
@@ -111,10 +138,6 @@ int lista::posicion(Jugador e)
 
  return (encontrado?v:-1);
 }
-lista::lista(Jugador e)
-{
- elementos=new TNodo_Lista;
- elementos->Datos=e;
- elementos->Siguiente=NULL;
- n=1;
-}
+
+
+
