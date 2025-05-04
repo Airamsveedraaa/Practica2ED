@@ -68,58 +68,60 @@ public:
     bool estaActivo();
     /*devuelve true si el estado del servidor es ACTIVO; false en caso contrario.*/
 
-    bool activar(); //activa un servidor en estado INACTIVO o MANTENIMIENTO. Si el servidor ya estaba
-    //activado, el método devolverá false; true en caso contrario, confirmando así que el servidor ha
-    //sido activado.
+    bool activar();
+  /*activa un servidor en estado INACTIVO o MANTENIMIENTO. Si el servidor ya estaba
+    activado, el método devolverá false; true en caso contrario, confirmando así que el servidor ha
+    sido activado.*/
 
     bool desactivar();
-    //desactiva un servidor en estado ACTIVO o MANTENIMIENTO. Si el servidor ya estaba desactivado, el
-    //método devolverá false; true en caso contrario, confirmando así que el servidor ha sido desactivado.
-    //Si el servidor a desactivar está previamente activo, será necesario vaciar tanto la lista de
-    //jugadores conectados como la cola de aquellos que están esperando poder conectarse.
+  /*desactiva un servidor en estado ACTIVO o MANTENIMIENTO. Si el servidor ya estaba desactivado, el
+    método devolverá false; true en caso contrario, confirmando así que el servidor ha sido desactivado.
+    Si el servidor a desactivar está previamente activo, será necesario vaciar tanto la lista de
+    jugadores conectados como la cola de aquellos que están esperando poder conectarse.*/
 
     bool ponerEnMantenimiento();
-    //pone un servidor en MANTENIMIENTO. Sólo es posible pasar al estado MANTENIMIENTO para aquellos
-    //servidores que están INACTIVOS. El método devolverá true en caso de poder poner al servidor en
-    //MANTENIMIENTO; false en caso contrario, esto es, cuando el servidor está previamente ACTIVO, o bien
-    //ya está en MANTENIMIENTO.
+  /*pone un servidor en MANTENIMIENTO. Sólo es posible pasar al estado MANTENIMIENTO para aquellos
+    servidores que están INACTIVOS. El método devolverá true en caso de poder poner al servidor en
+    MANTENIMIENTO; false en caso contrario, esto es, cuando el servidor está previamente ACTIVO, o bien
+    ya está en MANTENIMIENTO.*/
 
     void mostrarInformacion();
-    //muestra por pantalla información de interés del servidor. En concreto, muestra la dirección y el
-    //identificador del servidor, su estado, la relación entre el máximo de jugadores que puede alojar y
-    //el número real de jugadores conectados. También mostrará el número máximo de jugadores que pueden
-    //estar esperando acceso, junto con el número de elementos tipo Jugador encolados en jugadoresEnEspera
-    //con dicho propósito. Finalmente, también mostrará el puerto de escucha del servidor y la latencia
-    //media de los jugadores conectados, y la localización geográfica del servidor (país).
+  /*muestra por pantalla información de interés del servidor. En concreto, muestra la dirección y el
+    identificador del servidor, su estado, la relación entre el máximo de jugadores que puede alojar y
+    el número real de jugadores conectados. También mostrará el número máximo de jugadores que pueden
+    estar esperando acceso, junto con el número de elementos tipo Jugador encolados en jugadoresEnEspera
+    con dicho propósito. Finalmente, también mostrará el puerto de escucha del servidor y la latencia
+    media de los jugadores conectados, y la localización geográfica del servidor (país).*/
 
     bool expulsarJugador(cadena nombre);
-    //expulsa el jugador cuyo nombreJugador coincide con el parámetro nombre de la lista de conectados,
-    //o bien de la cola de espera, en función de dónde esté contenida la instancia de tipo Jugador
-    //correspondiente. Si el jugador es localizado en alguna de estas estructuras y convenientemente
-    //eliminado el método devolverá true; false en caso contrario. Si el jugador a expulsar es localizado
-    //en la lista de jugadores conectados, tras eliminarlo, será necesario comprobar si hay alguien en
-    //la lista de espera. En caso positivo, el primero de la cola será automáticamente conectado
-    //al servidor, pasando a la lista de conectados.
+  /*expulsa el jugador cuyo nombreJugador coincide con el parámetro nombre de la lista de conectados,
+    o bien de la cola de espera, en función de dónde esté contenida la instancia de tipo Jugador
+    correspondiente. Si el jugador es localizado en alguna de estas estructuras y convenientemente
+    eliminado el método devolverá true; false en caso contrario. Si el jugador a expulsar es localizado
+    en la lista de jugadores conectados, tras eliminarlo, será necesario comprobar si hay alguien en
+    la lista de espera. En caso positivo, el primero de la cola será automáticamente conectado
+    al servidor, pasando a la lista de conectados.*/
 
     void getNombreJuego(cadena nJ);
-    //devuelve el valor del atributo nombreJuego a través del parámetro de entrada/salida nJ.
+    /*devuelve el valor del atributo nombreJuego a través del parámetro de entrada/salida nJ.*/
 
     int getPuerto();
-    //devuelve el valor del atributo puerto.
+    /*devuelve el valor del atributo puerto.*/
 
     void getLocalizacionGeografica(cadena lG);
-    //devuelve el valor del atributo localizacionGeografica a través del parámetro de entrada/salida lG.
+    /*devuelve el valor del atributo localizacionGeografica a través del parámetro de entrada/salida lG.*/
 
     int getMaxJugadoresConectados();
-    //devuelve el valor del atributo maxJugadoresConectados.
+    /*devuelve el valor del atributo maxJugadoresConectados.*/
 
     int getMaxJugadoresEnEspera();
-    //devuelve el valor del atributo maxJugadoresEnEspera.
+    /*devuelve el valor del atributo maxJugadoresEnEspera.*/
+
     int getNumJugadoresConectados();
-    //devuelve el número de jugadores conectados al servidor.
+    /*devuelve el número de jugadores conectados al servidor.*/
 
     int getNumJugadoresEnEspera();
-    //devuelve el número de jugadores en la cola de espera de acceso al servidor.
+    /*devuelve el número de jugadores en la cola de espera de acceso al servidor.*/
 
     void exportarJugadoresConectados(Jugador *conectados);
     //el método copiara todos los jugadores alojados en el servidor en el vector dinámico accesible desde

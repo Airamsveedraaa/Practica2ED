@@ -15,6 +15,7 @@ Servidor::Servidor(cadena dS, cadena nJ,int i, int mxL, int mxC, int p, cadena l
 
 }
 
+
 Servidor::~Servidor()
 {
 
@@ -22,12 +23,14 @@ Servidor::~Servidor()
 
 }
 
+
 int Servidor::getId()
 {
 
     return id;
 
 }
+
 
 void Servidor::getDireccionServidor(cadena dS)
 {
@@ -44,12 +47,14 @@ void Servidor::setSiguienteServidor(Servidor *pS)
 
 }
 
+
 Servidor* Servidor::getSiguienteServidor()
 {
 
     return siguienteServidor;
 
 }
+
 
 bool Servidor::conectarJugador(Jugador j)
 {
@@ -78,13 +83,15 @@ bool Servidor::conectarJugador(Jugador j)
 
 }
 
+
 bool Servidor::ponerJugadorEnEspera(Jugador j)
 {
 
     bool exito=true;
-    int longi=jugadoresEnEspera.longitud();
+    int longi1=jugadoresEnEspera.longitud(); //Longitud de la cola de jugadores en espera
+    int longi2=jugadoresConectados.longitud(); //Longitud de la lista de jugadores conectados
 
-    if(longi!=maxJugadoresConectados || longi==maxJugadoresEnEspera)
+    if(longi2!=maxJugadoresConectados || longi1==maxJugadoresEnEspera)
     {
         exito=false;
     }
@@ -97,14 +104,14 @@ bool Servidor::ponerJugadorEnEspera(Jugador j)
 
 }
 
+
 void Servidor::mostrarJugadoresConectados()
 {
 
-    int i=1;
     int longi=jugadoresConectados.longitud();
 
     cout << "Datos de los jugadores conectados: ";
-    while(i<=longi)
+    for(int i=1; i<longi; i++)
     {
         cout << jugadoresConectados.observar(i).nombreJugador
              << "\n" << jugadoresConectados.observar(i).ID
@@ -114,6 +121,7 @@ void Servidor::mostrarJugadoresConectados()
     }
 
 }
+
 
 void Servidor::mostrarJugadoresEnEspera()
 {
@@ -126,7 +134,7 @@ void Servidor::mostrarJugadoresEnEspera()
     }
     else
     {
-        cout << "Datos de los jugadores en cola : ";
+        cout << "Datos de los jugadores en cola de espera : ";
         while(!jugadoresEnEspera.esvacia())
         {
             cout << jugadoresEnEspera.primero().nombreJugador
@@ -146,9 +154,210 @@ void Servidor::mostrarJugadoresEnEspera()
 
 }
 
-bool Servidor::estaActivo(){
 
-return (strcmp(estado,"ACTIVO")==0);
+bool Servidor::estaActivo()
+{
+
+    return (strcmp(estado,"ACTIVO")==0);
 
 }
 
+
+bool Servidor::activar()
+{
+
+    bool exito=true;
+
+    if(strcmp(estado,"ACTIVO")==0)
+    {
+        exito=false;
+    }
+
+    else if(strcmp(estado,"INACTIVO")==0 || strcmp(estado,"MANTENIMIENTO")==0)
+    {
+        strcpy(estado,"ACTIVO");
+    }
+    return exito;
+}
+
+
+bool Servidor::desactivar()
+{
+
+    bool exito=true;
+    int longi=jugadoresConectados.longitud();
+
+    if(strcmp(estado,"INACTIVO")==0)
+    {
+        exito=false; //esta inactivo, por lo que no hay que hacer nada
+    }
+
+    else if(strcmp(estado,"ACTIVO")==0)
+    {
+
+        //esta activo, por lo que se procede a su vaciado para posteriormente ponerlo en inactivo
+        //vaciamos lista de jugadores conectados
+        for(int i=1; i<longi; i++)
+        {
+            jugadoresConectados.eliminar(i);
+        }
+        //vaciamos cola de jugadores en espera
+        while(!jugadoresEnEspera.esvacia())
+        {
+            jugadoresEnEspera.desencolar();
+        }
+        strcpy(estado,"INACTIVO"); //ya se ha vaciado, por lo que se pone en inactivo
+    }
+    else
+    {
+        strcpy(estado,"INACTIVO"); //caso en el q el servidor este en mantenimiento, por lo que se pone en inactivo directamente
+    }
+    return exito;
+
+}
+
+
+bool Servidor::ponerEnMantenimiento()
+{
+
+    bool exito=true;
+
+    if(strcmp(estado,"MANTENIMIENTO")==0 || strcmp(estado,"ACTIVO")==0)
+    {
+        //indica que esta activo o ya en mantenimiento, no se puede poner en mantenimiento
+        exito=false;
+    }
+
+    else
+    {
+        strcpy(estado,"MANTENIMIENTO");
+    }
+
+    return exito;
+}
+
+
+void Servidor::mostrarInformacion()
+{
+
+    //Hallar la latencia media de los jugadores conectados
+    int latmedia=0;
+    for(int i=1; i<jugadoresConectados.longitud(); i++)
+    {
+        latmedia+=jugadoresConectados.observar(i).latencia;
+    }
+    latmedia=latmedia%jugadoresConectados.longitud();
+
+    cout << "INFORMACION DEL SERVIDOR: "
+         << "\nDireccion: " << direccionServidor
+         << "\nIdentificador: " << id
+         << "\nMaximo de jugadores en linea simultaneos : " << maxJugadoresConectados
+         << "\nNumero real de jugadores en linea simultaneos : " << jugadoresConectados.longitud()
+         << "\nMaximo de jugadores en espera: " << maxJugadoresEnEspera
+         << "\nNumero real de jugadores en espera: " << jugadoresEnEspera.longitud()
+         << "\nPuerto de escucha: " << puerto
+         << "\nLatencia media: " << latmedia
+         << "\nUbicacion geografica: " << localizacionGeografica << endl;
+
+}
+
+bool Servidor::expulsarJugador(cadena nombre)
+{
+
+    bool exito=false;
+    int i=1;
+    cola CAux;
+    //primero comprobar que no este en la cola de jugadores en espera el jugador a eliminar
+    while(!jugadoresEnEspera.esvacia() && !exito)
+    {
+        if(strcmp(jugadoresEnEspera.primero().nombreJugador,nombre)==0)
+        {
+            jugadoresEnEspera.desencolar(); //jugador encontrado en la cola de espera
+            exito=true;
+        }
+        else
+        {
+            CAux.encolar(jugadoresEnEspera.primero()); //si no se encuentra, se encola en una cola auxiliar para luego devolverlos a la original
+            jugadoresEnEspera.desencolar();
+        }
+    }
+
+    //devolver jugadores no eliminados a la cola de espera
+    while(!CAux.esvacia())
+    {
+        jugadoresEnEspera.encolar(CAux.primero());
+        CAux.desencolar();
+    }
+
+    //comprobar si el jugador a eliminar esta en la lista de jugadores conectados.
+    if(!exito)
+    {
+        while(i<=jugadoresConectados.longitud())
+        {
+            if(strcmp(jugadoresConectados.observar(i).nombreJugador,nombre)==0)
+            {
+                //jugador encontrado en la lista, procedemos a eliminarlo
+                jugadoresConectados.eliminar(i);
+                exito=true;
+            }
+            else
+                i++;
+        }
+    }
+    //despues de eliminar, comprobar si hay jugadores en espera para ser conectados al servidor
+    if(!jugadoresEnEspera.esvacia() && exito)
+    {
+        jugadoresConectados.insertar(i+1,jugadoresEnEspera.primero());
+        jugadoresEnEspera.desencolar();
+    }
+    return exito;
+}
+
+
+void Servidor::getNombreJuego(cadena nJ){
+
+strcpy(nJ,nombreJuego);
+
+}
+
+
+int Servidor::getPuerto(){
+
+return puerto;
+
+}
+
+
+void Servidor::getLocalizacionGeografica(cadena lG){
+
+strcpy(lG,localizacionGeografica);
+
+}
+
+
+int Servidor::getMaxJugadoresConectados(){
+
+return maxJugadoresConectados;
+
+}
+
+
+int Servidor::getMaxJugadoresEnEspera(){
+
+return maxJugadoresEnEspera;
+
+}
+
+
+int Servidor::getNumJugadoresConectados(){
+
+return jugadoresConectados.longitud();
+
+}
+
+
+int Servidor::getNumJugadoresEnEspera(){
+
+return jugadoresEnEspera.longitud();
+
+}

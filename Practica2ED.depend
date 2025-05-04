@@ -17,10 +17,10 @@
 	<windows.h>
 	<cstring>
 
-1746217427 source:c:\users\airam\desktop\practica2ed\src\servidor.cpp
+1746354637 source:c:\users\airam\desktop\practica2ed\src\servidor.cpp
 	"Servidor.h"
 
-1746264721 c:\users\airam\desktop\practica2ed\include\servidor.h
+1746354637 c:\users\airam\desktop\practica2ed\include\servidor.h
 	"Comun.h"
 	"TADCola.h"
 	"TADLista.h"
