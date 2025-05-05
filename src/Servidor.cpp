@@ -257,7 +257,8 @@ void Servidor::mostrarInformacion()
          << "\nNumero real de jugadores en espera: " << jugadoresEnEspera.longitud()
          << "\nPuerto de escucha: " << puerto
          << "\nLatencia media: " << latmedia
-         << "\nUbicacion geografica: " << localizacionGeografica << endl;
+         << "\nUbicacion geografica: " << localizacionGeografica
+         << "\n---------------------------------------------------" << endl;
 
 }
 
@@ -314,50 +315,90 @@ bool Servidor::expulsarJugador(cadena nombre)
 }
 
 
-void Servidor::getNombreJuego(cadena nJ){
+void Servidor::getNombreJuego(cadena nJ)
+{
 
-strcpy(nJ,nombreJuego);
-
-}
-
-
-int Servidor::getPuerto(){
-
-return puerto;
+    strcpy(nJ,nombreJuego);
 
 }
 
 
-void Servidor::getLocalizacionGeografica(cadena lG){
+int Servidor::getPuerto()
+{
 
-strcpy(lG,localizacionGeografica);
-
-}
-
-
-int Servidor::getMaxJugadoresConectados(){
-
-return maxJugadoresConectados;
+    return puerto;
 
 }
 
 
-int Servidor::getMaxJugadoresEnEspera(){
+void Servidor::getLocalizacionGeografica(cadena lG)
+{
 
-return maxJugadoresEnEspera;
-
-}
-
-
-int Servidor::getNumJugadoresConectados(){
-
-return jugadoresConectados.longitud();
+    strcpy(lG,localizacionGeografica);
 
 }
 
 
-int Servidor::getNumJugadoresEnEspera(){
+int Servidor::getMaxJugadoresConectados()
+{
 
-return jugadoresEnEspera.longitud();
+    return maxJugadoresConectados;
+
+}
+
+
+int Servidor::getMaxJugadoresEnEspera()
+{
+
+    return maxJugadoresEnEspera;
+
+}
+
+
+int Servidor::getNumJugadoresConectados()
+{
+
+    return jugadoresConectados.longitud();
+
+}
+
+
+int Servidor::getNumJugadoresEnEspera()
+{
+
+    return jugadoresEnEspera.longitud();
+
+}
+
+
+void Servidor::exportarJugadoresConectados(Jugador* conectados)
+{
+
+    for(int i=1; i<jugadoresConectados.longitud(); i++)
+    {
+
+        conectados[i]=jugadoresConectados.observar(i);
+    }
+
+}
+
+
+void Servidor::exportarJugadoresEnEspera(Jugador* enEspera)
+{
+
+    int i=1;
+    cola CAux;
+    while(!jugadoresEnEspera.esvacia() && i<=jugadoresEnEspera.longitud())
+    {
+        enEspera[i]=jugadoresEnEspera.primero();
+        CAux.encolar(jugadoresEnEspera.primero());
+        jugadoresEnEspera.desencolar();
+        i++;
+    }
+
+    while(!CAux.esvacia()){
+        jugadoresEnEspera.encolar(CAux.primero());
+        CAux.desencolar();
+    }
 
 }
