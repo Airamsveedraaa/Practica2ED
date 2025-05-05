@@ -3,7 +3,8 @@
 #include <iostream>
 #include <windows.h>
 #include <cstring>
-
+#define PAUSE system("pause");
+#define CLS system("cls");
 typedef char cadena [50];
 
 using namespace std;

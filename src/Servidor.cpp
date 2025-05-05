@@ -70,7 +70,7 @@ bool Servidor::conectarJugador(Jugador j)
     }
     else
     {
-        while(jugadoresConectados.observar(i).puntuacion < j.puntuacion && i<longi)
+        while(i<=longi && jugadoresConectados.observar(i).puntuacion < j.puntuacion)
         {
             i++;
         }
@@ -111,7 +111,7 @@ void Servidor::mostrarJugadoresConectados()
     int longi=jugadoresConectados.longitud();
 
     cout << "Datos de los jugadores conectados: ";
-    for(int i=1; i<longi; i++)
+    for(int i=1; i<=longi; i++)
     {
         cout << jugadoresConectados.observar(i).nombreJugador
              << "\n" << jugadoresConectados.observar(i).ID
@@ -197,9 +197,9 @@ bool Servidor::desactivar()
 
         //esta activo, por lo que se procede a su vaciado para posteriormente ponerlo en inactivo
         //vaciamos lista de jugadores conectados
-        for(int i=1; i<longi; i++)
+        for(int i=1; i<=longi; i++)
         {
-            jugadoresConectados.eliminar(i);
+            jugadoresConectados.eliminar(1);
         }
         //vaciamos cola de jugadores en espera
         while(!jugadoresEnEspera.esvacia())
@@ -242,11 +242,14 @@ void Servidor::mostrarInformacion()
 
     //Hallar la latencia media de los jugadores conectados
     int latmedia=0;
-    for(int i=1; i<jugadoresConectados.longitud(); i++)
+    for(int i=1; i<=jugadoresConectados.longitud(); i++)
     {
         latmedia+=jugadoresConectados.observar(i).latencia;
+        cout << "Ha entrado al for" << endl;
     }
-    latmedia=latmedia%jugadoresConectados.longitud();
+
+    if(jugadoresConectados.longitud()!=0)
+    latmedia=latmedia/jugadoresConectados.longitud();
 
     cout << "INFORMACION DEL SERVIDOR: "
          << "\nDireccion: " << direccionServidor
@@ -374,10 +377,10 @@ int Servidor::getNumJugadoresEnEspera()
 void Servidor::exportarJugadoresConectados(Jugador* conectados)
 {
 
-    for(int i=1; i<jugadoresConectados.longitud(); i++)
+    for(int i=1; i<=jugadoresConectados.longitud(); i++)
     {
 
-        conectados[i]=jugadoresConectados.observar(i);
+        conectados[i-1]=jugadoresConectados.observar(i);
     }
 
 }

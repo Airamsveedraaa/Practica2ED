@@ -1,10 +1,6 @@
 # depslib dependency file v1.0
-1746216567 source:c:\users\airam\desktop\practica2ed\main.cpp
-	"Comun.h"
+1746467770 source:c:\users\airam\desktop\practica2ed\main.cpp
 	"GestorServidores.h"
-	"Servidor.h"
-	"TADCola.h"
-	"TADLista.h"
 
 1746261066 source:c:\users\airam\desktop\practica2ed\src\tadlista.cpp
 	"TADLista.h"
@@ -12,12 +8,12 @@
 1746197287 c:\users\airam\desktop\practica2ed\include\tadlista.h
 	"Comun.h"
 
-1746216567 c:\users\airam\desktop\practica2ed\include\comun.h
+1746467299 c:\users\airam\desktop\practica2ed\include\comun.h
 	<iostream>
 	<windows.h>
 	<cstring>
 
-1746354637 source:c:\users\airam\desktop\practica2ed\src\servidor.cpp
+1746475801 source:c:\users\airam\desktop\practica2ed\src\servidor.cpp
 	"Servidor.h"
 
 1746354637 c:\users\airam\desktop\practica2ed\include\servidor.h
