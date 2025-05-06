@@ -245,7 +245,6 @@ void Servidor::mostrarInformacion()
     for(int i=1; i<=jugadoresConectados.longitud(); i++)
     {
         latmedia+=jugadoresConectados.observar(i).latencia;
-        cout << "Ha entrado al for" << endl;
     }
 
     if(jugadoresConectados.longitud()!=0)

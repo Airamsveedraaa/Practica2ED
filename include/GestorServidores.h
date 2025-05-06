@@ -12,15 +12,17 @@ int numServidores; //número de servidores de juego desplegados gobernados por el
 
 public:
 GestorServidores();
-//método constructor que inicializará convenientemente los atributos de la clase a los valores por
-//defecto convenidos.
+
+/*método constructor que inicializará convenientemente los atributos de la clase a los valores por
+  defecto convenidos.*/
 
 ~GestorServidores();
-//método destructor que liberará la memoria reservada para los artefactos dinámicos que integran
-//la estructura de nodos enlazados correspondiente al conjunto de servidores.
+/*método destructor que liberará la memoria reservada para los artefactos dinámicos que integran
+  la estructura de nodos enlazados correspondiente al conjunto de servidores.*/
 
 int getNumServidores();
-//devuelve el valor del atributo numServidores.
+/*devuelve el valor del atributo numServidores.*/
+
 bool desplegarServidor(cadena dS, cadena nJ, int i, int mxL, int mxC, int p, cadena lG);
 //desplegará un nuevo servidor de juego en el sistema. Para ello, creará un objeto de la clase
 //Servidor, cuya dirección/hostname será dS, el juego ejecutado nJ, su identificador i, el máximo de

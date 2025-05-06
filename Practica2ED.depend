@@ -13,7 +13,7 @@
 	<windows.h>
 	<cstring>
 
-1746475801 source:c:\users\airam\desktop\practica2ed\src\servidor.cpp
+1746541260 source:c:\users\airam\desktop\practica2ed\src\servidor.cpp
 	"Servidor.h"
 
 1746354637 c:\users\airam\desktop\practica2ed\include\servidor.h
@@ -30,7 +30,7 @@
 1746197688 source:c:\users\airam\desktop\practica2ed\src\gestorservidores.cpp
 	"GestorServidores.h"
 
-1746197750 c:\users\airam\desktop\practica2ed\include\gestorservidores.h
+1746540396 c:\users\airam\desktop\practica2ed\include\gestorservidores.h
 	"Comun.h"
 	"Servidor.h"
 
