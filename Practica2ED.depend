@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1746467770 source:c:\users\airam\desktop\practica2ed\main.cpp
+1746688129 source:c:\users\airam\desktop\practica2ed\main.cpp
 	"GestorServidores.h"
 
 1746261066 source:c:\users\airam\desktop\practica2ed\src\tadlista.cpp
@@ -27,10 +27,10 @@
 1746197532 source:c:\users\airam\desktop\practica2ed\src\tadcola.cpp
 	"TADCola.h"
 
-1746197688 source:c:\users\airam\desktop\practica2ed\src\gestorservidores.cpp
+1746688051 source:c:\users\airam\desktop\practica2ed\src\gestorservidores.cpp
 	"GestorServidores.h"
 
-1746540396 c:\users\airam\desktop\practica2ed\include\gestorservidores.h
+1746688175 c:\users\airam\desktop\practica2ed\include\gestorservidores.h
 	"Comun.h"
 	"Servidor.h"
 

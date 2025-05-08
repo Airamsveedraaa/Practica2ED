@@ -24,17 +24,17 @@ int getNumServidores();
 /*devuelve el valor del atributo numServidores.*/
 
 bool desplegarServidor(cadena dS, cadena nJ, int i, int mxL, int mxC, int p, cadena lG);
-//desplegará un nuevo servidor de juego en el sistema. Para ello, creará un objeto de la clase
-//Servidor, cuya dirección/hostname será dS, el juego ejecutado nJ, su identificador i, el máximo de
-//jugadores que puede alojar será mxL, y el máximo de jugadores que pueden estar en espera de conexión
-//mxC; su puerto de escucha será p, y el nombre del país en donde está físicamente instalado lG.
-//Este nuevo objeto será integrado en la estructura del nodos, y su estado por defecto será INACTIVO.
-//Estos nodos están ordenados por orden alfabético ascendente según el nombre del país en el que cada
-//servidor está ubicado (atributo localizacionGeografica). El nuevo nodo será añadido en dicha
-//estructura respetando este requisito. El método devolverá true si el despliegue del nuevo nodo es
-//completado con éxito; false en caso contrario, bien porque no haya sido posible reservar memoria
-//para crear el nuevo objeto, o bien porque ya existiese en la estructura de nodos otro Servidor con
-//el mismo nombre, o bien el mismo identificador que el nuevo elemento a integrar en la estructura.
+/*desplegará un nuevo servidor de juego en el sistema. Para ello, creará un objeto de la clase
+Servidor, cuya dirección/hostname será dS, el juego ejecutado nJ, su identificador i, el máximo de
+jugadores que puede alojar será mxL, y el máximo de jugadores que pueden estar en espera de conexión
+mxC; su puerto de escucha será p, y el nombre del país en donde está físicamente instalado lG.
+Este nuevo objeto será integrado en la estructura del nodos, y su estado por defecto será INACTIVO.
+Estos nodos están ordenados por orden alfabético ascendente según el nombre del país en el que cada
+servidor está ubicado (atributo localizacionGeografica). El nuevo nodo será añadido en dicha
+estructura respetando este requisito. El método devolverá true si el despliegue del nuevo nodo es
+completado con éxito; false en caso contrario, bien porque no haya sido posible reservar memoria
+para crear el nuevo objeto, o bien porque ya existiese en la estructura de nodos otro Servidor con
+el mismo nombre, o bien el mismo identificador que el nuevo elemento a integrar en la estructura.*/
 
 bool desconetarServidor(cadena dS);
 //el método intentará desconectar (poner en estado INACTIVO) el servidor cuya dirección/hostname
@@ -130,6 +130,8 @@ bool jugadorConectado(cadena nJ);
 //el método devolverá true si el jugador con nombre nJ está en la cola de espera de alguno de los
 //servidores activos del sistema.
 bool jugadorEnEspera(cadena nJ);
+
+Servidor* getPrimerServidor();
 
 };
 #endif // GESTORSERVIDORES_H_INCLUDED
