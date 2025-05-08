@@ -25,16 +25,16 @@ int getNumServidores();
 
 bool desplegarServidor(cadena dS, cadena nJ, int i, int mxL, int mxC, int p, cadena lG);
 /*desplegará un nuevo servidor de juego en el sistema. Para ello, creará un objeto de la clase
-Servidor, cuya dirección/hostname será dS, el juego ejecutado nJ, su identificador i, el máximo de
-jugadores que puede alojar será mxL, y el máximo de jugadores que pueden estar en espera de conexión
-mxC; su puerto de escucha será p, y el nombre del país en donde está físicamente instalado lG.
-Este nuevo objeto será integrado en la estructura del nodos, y su estado por defecto será INACTIVO.
-Estos nodos están ordenados por orden alfabético ascendente según el nombre del país en el que cada
-servidor está ubicado (atributo localizacionGeografica). El nuevo nodo será añadido en dicha
-estructura respetando este requisito. El método devolverá true si el despliegue del nuevo nodo es
-completado con éxito; false en caso contrario, bien porque no haya sido posible reservar memoria
-para crear el nuevo objeto, o bien porque ya existiese en la estructura de nodos otro Servidor con
-el mismo nombre, o bien el mismo identificador que el nuevo elemento a integrar en la estructura.*/
+  Servidor, cuya dirección/hostname será dS, el juego ejecutado nJ, su identificador i, el máximo de
+  jugadores que puede alojar será mxL, y el máximo de jugadores que pueden estar en espera de conexión
+  mxC; su puerto de escucha será p, y el nombre del país en donde está físicamente instalado lG.
+  Este nuevo objeto será integrado en la estructura del nodos, y su estado por defecto será INACTIVO.
+  Estos nodos están ordenados por orden alfabético ascendente según el nombre del país en el que cada
+  servidor está ubicado (atributo localizacionGeografica). El nuevo nodo será añadido en dicha
+  estructura respetando este requisito. El método devolverá true si el despliegue del nuevo nodo es
+  completado con éxito; false en caso contrario, bien porque no haya sido posible reservar memoria
+  para crear el nuevo objeto, o bien porque ya existiese en la estructura de nodos otro Servidor con
+  el mismo nombre, o bien el mismo identificador que el nuevo elemento a integrar en la estructura.*/
 
 bool desconetarServidor(cadena dS);
 //el método intentará desconectar (poner en estado INACTIVO) el servidor cuya dirección/hostname
@@ -51,16 +51,16 @@ bool desconetarServidor(cadena dS);
 //del sistema.
 
 bool conectarServidor(cadena dS);
-//el método permite activas (poner en estado ACTIVO) el servidor cuya dirección/hostname coincide
-//con el valor indicado en el parámetro de entrada dS. Devolverá true en caso de activar exitosamente
-//el servidor indicado; false en caso contrario, bien porque el servidor ya estaba activo, o bien
-//porque directamente no existía ningún nodo con la dirección/hostname indicado.
+/*el método permite activas (poner en estado ACTIVO) el servidor cuya dirección/hostname coincide
+  con el valor indicado en el parámetro de entrada dS. Devolverá true en caso de activar exitosamente
+  el servidor indicado; false en caso contrario, bien porque el servidor ya estaba activo, o bien
+  porque directamente no existía ningún nodo con la dirección/hostname indicado.*/
 
 bool realizarMantenimiento(cadena dS);
-//el método permite poner en estado MANTENIMIENTO el servidor cuya dirección/hostname coincide con
-//el valor indicado en el parámetro de entrada dS. Devolverá true en caso de poner exitosamente el
-//servidor indicado en mantenimiento; false en caso contrario, bien porque el servidor ya estaba en
-//dicho estado, o bien porque directamente no existía ningún nodo con la dirección/hostname indicado.
+/*el método permite poner en estado MANTENIMIENTO el servidor cuya dirección/hostname coincide con
+  el valor indicado en el parámetro de entrada dS. Devolverá true en caso de poner exitosamente el
+  servidor indicado en mantenimiento; false en caso contrario, bien porque el servidor ya estaba en
+  dicho estado, o bien porque directamente no existía ningún nodo con la dirección/hostname indicado.*/
 
 bool eliminarServidor(cadena dS);
 //el método eliminará de la estructura de nodos enlazados el servidor cuya dirección/hostname coincide
@@ -131,7 +131,13 @@ bool jugadorConectado(cadena nJ);
 //servidores activos del sistema.
 bool jugadorEnEspera(cadena nJ);
 
+//Metodos auxiliares
+
 Servidor* getPrimerServidor();
+//Devuelve el primer servidor
+
+Servidor* getServidorP(int pos);
+//Devuelve el servidor ubicado en la posicion pasada por parametro, con el objetivo de usar esa posicion para activar,desactivar,mantenimientos...
 
 };
 #endif // GESTORSERVIDORES_H_INCLUDED

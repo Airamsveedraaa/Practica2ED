@@ -18,7 +18,7 @@
 1746541260 source:c:\users\airam\desktop\practica2ed\src\servidor.cpp
 	"Servidor.h"
 
-1746354637 c:\users\airam\desktop\practica2ed\include\servidor.h
+1746736919 c:\users\airam\desktop\practica2ed\include\servidor.h
 	"Comun.h"
 	"TADCola.h"
 	"TADLista.h"
@@ -29,10 +29,10 @@
 1746197532 source:c:\users\airam\desktop\practica2ed\src\tadcola.cpp
 	"TADCola.h"
 
-1746731472 source:c:\users\airam\desktop\practica2ed\src\gestorservidores.cpp
+1746736838 source:c:\users\airam\desktop\practica2ed\src\gestorservidores.cpp
 	"GestorServidores.h"
 
-1746688175 c:\users\airam\desktop\practica2ed\include\gestorservidores.h
+1746736919 c:\users\airam\desktop\practica2ed\include\gestorservidores.h
 	"Comun.h"
 	"Servidor.h"
 

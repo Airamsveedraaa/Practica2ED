@@ -64,7 +64,7 @@ bool GestorServidores::desplegarServidor(cadena dS, cadena nJ, int i, int mxL, i
                 exito=false; //mismo nombre de juego
             }
 
-                Actual=Actual->getSiguienteServidor();
+            Actual=Actual->getSiguienteServidor();
         }
         if(exito)
         {
@@ -124,10 +124,112 @@ bool GestorServidores::desplegarServidor(cadena dS, cadena nJ, int i, int mxL, i
 }
 
 
+bool GestorServidores::conectarServidor(cadena dS)
+{
+
+    bool exito=true;
+    if(primerServidor==NULL)
+    {
+        exito=false; //error, no hay servidores
+    }
+
+    else
+    {
+        //buscar servidor coincidente para activarlo
+        Servidor* ServerAux=primerServidor; //Servidor auxiliar para recorrer y encontrar posicion en donde activar
+        while(ServerAux!=NULL)
+        {
+            cadena dir;
+            ServerAux->getDireccionServidor(dir);
+            if(strcmp(dir,dS)==0)
+            {
+                //Posicion encontrada, activamos server
+                ServerAux->activar();
+            }
+            ServerAux=ServerAux->getSiguienteServidor();
+        }
+    }
+
+    return exito;
+}
+
+
+bool GestorServidores::realizarMantenimiento(cadena dS)
+{
+
+    bool exito=true;
+    if(primerServidor==NULL)
+    {
+        exito=false; //error, no hay servidores
+    }
+
+    else
+    {
+        //buscar servidor coincidente para activarlo
+        Servidor* ServerAux=primerServidor; //Servidor auxiliar para recorrer y encontrar posicion en donde realizar mantenimiento
+        while(ServerAux!=NULL)
+        {
+            cadena dir;
+            ServerAux->getDireccionServidor(dir);
+            if(strcmp(dir,dS)==0)
+            {
+                //Posicion encontrada, activamos server
+                ServerAux->ponerEnMantenimiento();
+            }
+            ServerAux=ServerAux->getSiguienteServidor();
+        }
+    }
+
+
+}
+
+
+bool GestorServidores::eliminarServidor(cadena dS)
+{
+
+    bool exito=true;
+
+    if(primerServidor==NULL)
+    {
+        exito=false; //no hay servidores
+    }
+
+    else
+    {
+        //buscar servidor coincidente para activarlo
+        Servidor* ServerAux=primerServidor; //Servidor auxiliar para recorrer y encontrar posicion en donde realizar mantenimiento
+        Servidor* anterior=NULL;
+        while(ServerAux!=NULL)
+        {
+            cadena dir;
+            ServerAux->getDireccionServidor(dir);
+            if(strcmp(dir,dS)==0)
+            {
+                //Posicion encontrada, "eliminamos" server (mover posiciones)
+                anterior=ServerAux->getSiguienteServidor();
+                ServerAux=NULL;
+            }
+            ServerAux=ServerAux->getSiguienteServidor();
+        }
+
+    }
+
+
+    return exito;
+}
+
 Servidor* GestorServidores::getPrimerServidor()
 {
 
     return primerServidor;
+
+}
+
+Servidor* GestorServidores::getServidorP(int pos)
+{
+
+//¿? posible insertarlo ¿?
+
 
 }
 

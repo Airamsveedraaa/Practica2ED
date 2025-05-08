@@ -124,11 +124,11 @@ public:
     /*devuelve el número de jugadores en la cola de espera de acceso al servidor.*/
 
     void exportarJugadoresConectados(Jugador *conectados);
-    //el método copiara todos los jugadores alojados en el servidor en el vector dinámico accesible desde
-    //el puntero conectados, parámetro de entrada.
+    /*el método copiara todos los jugadores alojados en el servidor en el vector dinámico accesible desde
+      el puntero conectados, parámetro de entrada.*/
 
     void exportarJugadoresEnEspera(Jugador *enEspera);
-    //el método copiara todos los jugadores que están en la cola de espera para el acceso al servidor en
-    //el vector dinámico accesible desde el puntero conectados, parámetro de entrada.
+    /*el método copiara todos los jugadores que están en la cola de espera para el acceso al servidor en
+      el vector dinámico accesible desde el puntero conectados, parámetro de entrada.*/
 };
 #endif // SERVIDOR_H_INCLUDED
