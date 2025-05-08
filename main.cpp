@@ -1,4 +1,4 @@
-#include "GestorServidores.h"
+/*#include "GestorServidores.h"
 
 Jugador crearJugador(const char* nombre, int id, bool activo, int latencia, long puntuacion, const char* pais) {
     Jugador j;
@@ -180,5 +180,63 @@ int main()
     while(opc != 9);
 
     return 0;
-}
+}*/
 
+#include <iostream>
+#include <cstring>
+#include "GestorServidores.h"
+
+using namespace std;
+
+int main() {
+    GestorServidores gestor;
+
+    // Variables de entrada
+    cadena dS = "DataCenter1";
+    cadena lG1 = "Madrid";
+    cadena lG2 = "Barcelona";
+    cadena lG3 = "Valencia";
+    cadena lG4 = "Zaragoza";
+
+    cadena juego1 = "BattleZone";
+    cadena juego2 = "SkyWars";
+    cadena juego3 = "StarQuest";
+    cadena juego4 = "BattleZone"; // Duplicado
+
+    // 1. Insertar primer servidor
+    bool ok = gestor.desplegarServidor(dS, juego1, 101, 100, 10, 5, lG1);
+    cout << "Insertado 1: " << (ok ? "OK" : "Fallo") << endl;
+
+    // 2. Insertar con localización < primer nodo (Barcelona < Madrid) -> al principio
+    ok = gestor.desplegarServidor(dS, juego2, 102, 120, 12, 4, lG2);
+    cout << "Insertado 2 (al principio): " << (ok ? "OK" : "Fallo") << endl;
+
+    // 3. Insertar con localización > primer y segundo nodo (Valencia) -> al final
+    ok = gestor.desplegarServidor(dS, juego3, 103, 110, 8, 6, lG3);
+    cout << "Insertado 3 (al final): " << (ok ? "OK" : "Fallo") << endl;
+
+    // 4. Rechazar por ID duplicado
+    ok = gestor.desplegarServidor(dS, "AnotherGame", 101, 130, 10, 5, lG4);
+    cout << "Duplicado ID: " << (ok ? "OK" : "Rechazado") << endl;
+
+    // 5. Rechazar por nombre duplicado
+    ok = gestor.desplegarServidor(dS, juego4, 104, 130, 10, 5, lG4);
+    cout << "Duplicado nombre juego: " << (ok ? "OK" : "Rechazado") << endl;
+
+    // 6. Insertar en medio (Zaragoza)
+    ok = gestor.desplegarServidor(dS, "MegaCraft", 105, 140, 10, 5, lG4);
+    cout << "Insertado 4 (en medio): " << (ok ? "OK" : "Fallo") << endl;
+
+    // 7. Mostrar lista
+    cout << "\nServidores desplegados:\n";
+    Servidor* actual = gestor.getPrimerServidor();
+    cadena nombre, loc;
+    while (actual != nullptr) {
+        actual->getNombreJuego(nombre);
+        actual->getLocalizacionGeografica(loc);
+        cout << "- " << nombre << " [" << loc << "] (ID: " << actual->getId() << ")" << endl;
+        actual = actual->getSiguienteServidor();
+    }
+
+    return 0;
+}

@@ -37,92 +37,89 @@ int GestorServidores::getNumServidores()
 bool GestorServidores::desplegarServidor(cadena dS, cadena nJ, int i, int mxL, int mxC, int p, cadena lG)
 {
 
-    bool exito=true; //condicion de parada y salida
+//creamos objeto y variable booleana
+    bool exito=true;
 
-    Servidor* servidorActual=new Servidor(dS,nJ,i,mxL,mxC,p,lG); //Objeto inicializado
+    Servidor* ServidorActual=new Servidor(dS,nJ,i,mxL,mxC,p,lG); //Servidor a desplegar
 
-//Comprobaciones
-
-    if(servidorActual==NULL)
+    if(ServidorActual==NULL)
     {
-        exito=false; //no hay memoria para alojar mas servidores
+        exito=false; //no hay memoria para añadir el servidor
     }
 
     else
     {
-        Servidor* serverAux=primerServidor;
-        cadena s;
-        while(serverAux!=NULL && exito)
+        //comprobaciones
+        Servidor* Actual=primerServidor; //Servidor auxiliar para movernos entre nodos
+        cadena nomJ;
+        while(Actual!=NULL)
         {
-            if(serverAux->getId()==i)
+            Actual->getNombreJuego(nomJ);
+            if(Actual->getId()==i)
             {
-                exito=false; //mismo ID
+                exito=false; //mismo id
+            }
+            else if(strcmp(nomJ,nJ)==0)
+            {
+                exito=false; //mismo nombre de juego
+            }
+
+                Actual=Actual->getSiguienteServidor();
+        }
+        if(exito)
+        {
+            //quiere decir que podemos desplegar
+
+            //caso 1, al inicio de la lista
+            if(primerServidor==NULL)
+            {
+                ServidorActual->setSiguienteServidor(primerServidor);
+                primerServidor=ServidorActual;
+
             }
             else
             {
-                serverAux->getNombreJuego(s);
-                if(strcmp(s,nJ)==0)
+                cadena p;
+                primerServidor->getLocalizacionGeografica(p);
+                if(strcmp(p,lG)<0)
                 {
-                    exito=false;  //mismo Juego
+                    ServidorActual->setSiguienteServidor(primerServidor);
+                    primerServidor=ServidorActual;
                 }
-            }
-            serverAux=serverAux->getSiguienteServidor();
-        }
-    }
-
-    if(exito)
-    {
-
-        if(primerServidor==NULL)
-        {
-            primerServidor=servidorActual;
-            servidorActual->setSiguienteServidor(NULL);
-            //se inserta en la primera posicion
-        }
-        else
-        {
-            cadena p;
-            primerServidor->getLocalizacionGeografica(p);
-            if(strcmp(lG,p)<0)
-            {
-                servidorActual->setSiguienteServidor(primerServidor);
-                primerServidor=servidorActual;
-            }
-            else
-            {
-                Servidor* anterior=primerServidor;
-                Servidor* actual=primerServidor->getSiguienteServidor();
-                bool SvInsertado=false;
-                while(actual!=NULL && !SvInsertado)
+                else
                 {
-                    cadena localA;
-                    actual->getLocalizacionGeografica(localA);
-                    if(strcmp(lG,localA)<0)
+                    Servidor* anterior=primerServidor;
+                    Servidor* actual=primerServidor->getSiguienteServidor();
+                    bool SvInsertado=false;
+                    while(actual!=NULL && !SvInsertado)
                     {
-                        servidorActual->setSiguienteServidor(actual);
-                        anterior->setSiguienteServidor(servidorActual);
-                        actual=NULL;
-                        SvInsertado=true; //servidor insertado en posicion intermedia
+                        cadena localA;
+                        actual->getLocalizacionGeografica(localA);
+                        if(strcmp(localA,lG)<0)
+                        {
+                            ServidorActual->setSiguienteServidor(actual);
+                            anterior->setSiguienteServidor(ServidorActual);
+                            actual=NULL;
+                            SvInsertado=true;
+                        }
+                        else
+                        {
+                            anterior=actual;
+                            actual=actual->getSiguienteServidor();
+                        }
                     }
-                    else
+                    if(!SvInsertado)
                     {
-                        anterior=actual;
-                        actual=actual->getSiguienteServidor();
+                        anterior->setSiguienteServidor(ServidorActual);
+                        ServidorActual->setSiguienteServidor(NULL);
                     }
                 }
-                if(!SvInsertado)
-                {
-                    anterior->setSiguienteServidor(servidorActual);
-                    servidorActual->setSiguienteServidor(NULL);
-                    //servidor insertado al final si no se ha insertado antes
-                }
-
             }
         }
-
         numServidores++;
 
     }
+
     return exito;
 }
 
