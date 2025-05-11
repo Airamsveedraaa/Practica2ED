@@ -63,12 +63,12 @@ bool realizarMantenimiento(cadena dS);
   dicho estado, o bien porque directamente no existía ningún nodo con la dirección/hostname indicado.*/
 
 bool eliminarServidor(cadena dS);
-//el método eliminará de la estructura de nodos enlazados el servidor cuya dirección/hostname coincide
-//con el valor indicado en el parámetro de entrada dS. Este método es aplicable solamente sobre
-//aquellos servidores en estado INACTIVO o MANTENIMIENTO. El método devolverá true en caso de
-//eliminarse de forma exitosa el servidor indicado; falso en caso contrario, esto es, cuando no
-//exista ningún nodo con la dirección/hostname indicado, o bien el servidor afectado no esté INACTIVO
-//o en MANTENIMIENTO.
+/*el método eliminará de la estructura de nodos enlazados el servidor cuya dirección/hostname coincide
+con el valor indicado en el parámetro de entrada dS. Este método es aplicable solamente sobre
+aquellos servidores en estado INACTIVO o MANTENIMIENTO. El método devolverá true en caso de
+eliminarse de forma exitosa el servidor indicado; falso en caso contrario, esto es, cuando no
+exista ningún nodo con la dirección/hostname indicado, o bien el servidor afectado no esté INACTIVO
+o en MANTENIMIENTO.*/
 
 bool alojarJugador(Jugador j, cadena nomJuego, cadena host, bool &enEspera);
 //el método intentará alojar al jugador (tipo Jugador) j en algún servidor ACTIVO para el juego de
@@ -100,10 +100,10 @@ bool expulsarJugador(cadena nJ, cadena host);
 //dicha estructura pase a ser alojado en este servidor de forma automática.
 
 int getPosicionServidor(cadena dS);
-//el método devolverá la posición en la que se encuentra el servidor cuya dirección/hostname es igual
-//a dS dentro de la secuencia que forman el conjunto de nodos enlazados, siendo el primer nodo el
-//que ocupa la posición 1. Si no hay en la estructura de nodos enlazados ningún servidor con la
-//dirección indicada, el método devolverá un -1.
+/*el método devolverá la posición en la que se encuentra el servidor cuya dirección/hostname es igual
+a dS dentro de la secuencia que forman el conjunto de nodos enlazados, siendo el primer nodo el
+que ocupa la posición 1. Si no hay en la estructura de nodos enlazados ningún servidor con la
+dirección indicada, el método devolverá un -1.*/
 
 void mostrarInformacionServidores(int pos);
 //muestra por pantalla información del servidor que se encuentra en la posición indicada por el
@@ -116,20 +116,20 @@ void mostrarInformacionServidores(int pos);
 //mismo.
 
 bool jugadorConectado(cadena nJ, cadena dS);
-//el método devolverá true si el jugador con nombre nJ está conectado al servidor con
-//dirección/hostname dS; false en caso contrario.
+/*el método devolverá true si el jugador con nombre nJ está conectado al servidor con
+dirección/hostname dS; false en caso contrario.*/
 
 bool jugadorEnEspera(cadena nJ, cadena dS);
-//el método devolverá true si el jugador con nombre nJ está en la cola de espera del servidor con
-//dirección/hostname dS; false en caso contrario.
+/*el método devolverá true si el jugador con nombre nJ está en la cola de espera del servidor con
+dirección/hostname dS; false en caso contrario.*/
 
-//el método devolverá true si el jugador con nombre nJ está conectado a alguno de los servidores
-//activos del sistema.
 bool jugadorConectado(cadena nJ);
+/*el método devolverá true si el jugador con nombre nJ está conectado a alguno de los servidores
+activos del sistema.*/
 
-//el método devolverá true si el jugador con nombre nJ está en la cola de espera de alguno de los
-//servidores activos del sistema.
 bool jugadorEnEspera(cadena nJ);
+/*el método devolverá true si el jugador con nombre nJ está en la cola de espera de alguno de los
+servidores activos del sistema.*/
 
 //Metodos auxiliares
 
