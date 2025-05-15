@@ -116,8 +116,8 @@ bool GestorServidores::desplegarServidor(cadena dS, cadena nJ, int i, int mxL, i
                     }
                 }
             }
-        }
         numServidores++;
+        }
 
     }
 
@@ -130,7 +130,7 @@ bool GestorServidores::desplegarServidor(cadena dS, cadena nJ, int i, int mxL, i
 bool GestorServidores::conectarServidor(cadena dS)
 {
 
-    bool exito=true;
+    bool exito;
     if(primerServidor==NULL)
     {
         exito=false; //error, no hay servidores
@@ -147,7 +147,7 @@ bool GestorServidores::conectarServidor(cadena dS)
             if(strcmp(dir,dS)==0)
             {
                 //Posicion encontrada, activamos server
-                ServerAux->activar();
+                exito=ServerAux->activar();
             }
             ServerAux=ServerAux->getSiguienteServidor();
         }
@@ -160,7 +160,7 @@ bool GestorServidores::conectarServidor(cadena dS)
 bool GestorServidores::realizarMantenimiento(cadena dS)
 {
 
-    bool exito=true;
+    bool exito;
     if(primerServidor==NULL)
     {
         exito=false; //error, no hay servidores
@@ -177,7 +177,7 @@ bool GestorServidores::realizarMantenimiento(cadena dS)
             if(strcmp(dir,dS)==0)
             {
                 //Posicion encontrada, activamos server
-                ServerAux->ponerEnMantenimiento();
+                exito=ServerAux->ponerEnMantenimiento();
             }
             ServerAux=ServerAux->getSiguienteServidor();
         }
@@ -191,30 +191,30 @@ bool GestorServidores::eliminarServidor(cadena dS)
 {
 
     bool exito=true;
-
+    Servidor* ServerAux=primerServidor; //Servidor auxiliar para recorrer y encontrar posicion
     if(primerServidor==NULL)
     {
+
         exito=false; //no hay servidores
     }
-
     else
     {
-        //buscar servidor coincidente para activarlo
-        Servidor* ServerAux=primerServidor; //Servidor auxiliar para recorrer y encontrar posicion en donde realizar mantenimiento
-        Servidor* anterior=NULL;
-        while(ServerAux!=NULL)
+        //buscar servidor coincidente para eliminarlo
+        while(ServerAux->getSiguienteServidor()!=NULL)
         {
             cadena dir;
             ServerAux->getDireccionServidor(dir);
             if(strcmp(dir,dS)==0)
             {
                 //Posicion encontrada, "eliminamos" server (mover posiciones)
-                anterior=ServerAux->getSiguienteServidor();
-                ServerAux=NULL;
+                Servidor* anterior=ServerAux->getSiguienteServidor();
+                ServerAux->setSiguienteServidor(anterior->getSiguienteServidor());
+                delete anterior;
+                numServidores--;
             }
             ServerAux=ServerAux->getSiguienteServidor();
         }
-        numServidores--;
+
 
     }
 
@@ -223,6 +223,42 @@ bool GestorServidores::eliminarServidor(cadena dS)
 }
 
 //ALOJAR Y DESCONECTAR JUGADOR AQUI
+
+bool GestorServidores::alojarJugador(Jugador j, cadena nomJuego, cadena host, bool &enEspera)
+{
+    bool Alojado=false;
+    Servidor* Aux=primerServidor;
+    while(Aux!=NULL)
+    {
+        cadena nomJ;
+        Aux->getNombreJuego(nomJ);
+        if(strcmp(nomJ,nomJuego)==0)
+        {
+            if(Aux->estaActivo() && Aux->getMaxJugadoresConectados() > Aux->getNumJugadoresConectados())
+            {
+                Aux->conectarJugador(j);
+                Aux->getDireccionServidor(host);
+                Alojado=true;
+                enEspera=false;
+            }
+            else if (Aux->getMaxJugadoresEnEspera() > Aux->getNumJugadoresEnEspera())
+            {
+                Aux->ponerJugadorEnEspera(j);
+                Aux->getDireccionServidor(host);
+                Alojado=false;
+                enEspera=true;
+            }
+        }
+        else
+        {
+            Alojado=false;
+            enEspera=false;
+        }
+        Aux=Aux->getSiguienteServidor();
+    }
+    return Alojado;
+}
+
 
 int GestorServidores::getPosicionServidor(cadena dS)
 {
@@ -239,7 +275,8 @@ int GestorServidores::getPosicionServidor(cadena dS)
             encontrado=true;
         }
         else
-            p++;
+            Aux=Aux->getSiguienteServidor();
+        p++;
     }
     return p;
 }
@@ -250,6 +287,7 @@ bool GestorServidores::jugadorConectado(cadena nJ,cadena dS)
 {
 
     bool exito=false;
+    bool PerteneceJ=false;
 //primero, encontrar el servidor con dicha cadena ¿?
     Servidor* Aux=primerServidor;
     while(Aux!=NULL && !exito)
@@ -258,24 +296,15 @@ bool GestorServidores::jugadorConectado(cadena nJ,cadena dS)
         Aux->getDireccionServidor(aux);
         if(strcmp(aux,dS)==0)
         {
-            //ternario para ver si esta o no?
-            //Aux->conectarJugador()
-            int i=1;
-            int longi=Aux->getNumJugadoresConectados();
-            while(i<=longi)
-            {
-                Jugador j;
-                if(strcmp(nJ,j.nombreJugador)==0)
-                {
-                    exito=true;
-                }
-                else
-                {
-                    i++;            //TENGO QUE ENTRAR A LA LISTA, PERO NO SE COMO HACERLO
-                }
-            }
-
+            if(Aux->PerteneceLista(nJ))
+                PerteneceJ=true;
         }
+        Aux=Aux->getSiguienteServidor();
+    }
+
+    if(PerteneceJ)
+    {
+        exito=true;
     }
     return exito;
 }
@@ -284,6 +313,7 @@ bool GestorServidores::jugadorEnEspera(cadena nJ, cadena dS)
 {
 
     bool exito=false;
+    bool PerteneceJ=false;
     Servidor* Aux=primerServidor;
     while(Aux!=NULL && !exito)
     {
@@ -291,24 +321,14 @@ bool GestorServidores::jugadorEnEspera(cadena nJ, cadena dS)
         Aux->getDireccionServidor(aux);
         if(strcmp(aux,dS)==0)
         {
-            //ternario para ver si esta o no?
-            //Aux->conectarJugador()
-            int i=1;
-            int longi=Aux->getNumJugadoresEnEspera();
-            while(i<=longi)
-            {
-                Jugador j;
-                if(strcmp(nJ,j.nombreJugador)==0)
-                {
-                    exito=true;
-                }
-                else
-                {
-                    i++;            //TENGO QUE ENTRAR A LA COLA, PERO NO SE COMO HACERLO
-                }
-            }
-
+            if(Aux->PerteneceCola(nJ))
+                PerteneceJ=true;
         }
+        Aux=Aux->getSiguienteServidor();
+    }
+    if(PerteneceJ)
+    {
+        exito=true;
     }
     return exito;
 
@@ -318,30 +338,33 @@ bool GestorServidores::jugadorConectado(cadena nJ)
 {
 
     bool exito=false;
+    bool PerteneceJ=false;
     Servidor* Aux=primerServidor;
-    while(Aux->estaActivo() && !exito)
+    while(Aux!=NULL && !exito)
     {
         cadena direcc;
         Aux->getDireccionServidor(direcc);
-        if(jugadorConectado(nJ,direcc))
+        if(Aux->PerteneceLista(nJ))
         {
-            exito=true;
+            PerteneceJ=true;
         }
-        else
-        {
             Aux=Aux->getSiguienteServidor();
-        }
+    }
+    if(PerteneceJ)
+    {
+        exito=true;
     }
 
-return exito;
+    return exito;
 }
 
 
-bool GestorServidores::jugadorEnEspera(cadena nJ){
+bool GestorServidores::jugadorEnEspera(cadena nJ)
+{
 
- bool exito=false;
+    bool exito=false;
     Servidor* Aux=primerServidor;
-    while(Aux->estaActivo() && !exito)
+    while(Aux!=NULL && !exito)
     {
         cadena direcc;
         Aux->getDireccionServidor(direcc);
@@ -350,15 +373,15 @@ bool GestorServidores::jugadorEnEspera(cadena nJ){
             exito=true;
         }
         else
-        {
             Aux=Aux->getSiguienteServidor();
-        }
     }
 
-return exito;
+    return exito;
 
 
 }
+
+
 Servidor* GestorServidores::getPrimerServidor()
 {
 

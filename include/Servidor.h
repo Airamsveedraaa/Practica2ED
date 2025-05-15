@@ -130,5 +130,10 @@ public:
     void exportarJugadoresEnEspera(Jugador *enEspera);
     /*el método copiara todos los jugadores que están en la cola de espera para el acceso al servidor en
       el vector dinámico accesible desde el puntero conectados, parámetro de entrada.*/
+
+        //Metodos auxiliares
+    bool PerteneceCola(cadena nJ);
+    bool PerteneceLista(cadena nJ);
+
 };
 #endif // SERVIDOR_H_INCLUDED

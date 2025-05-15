@@ -248,7 +248,7 @@ void Servidor::mostrarInformacion()
     }
 
     if(jugadoresConectados.longitud()!=0)
-    latmedia=latmedia/jugadoresConectados.longitud();
+        latmedia=latmedia/jugadoresConectados.longitud();
 
     cout << "INFORMACION DEL SERVIDOR: "
          << "\nDireccion: " << direccionServidor
@@ -388,9 +388,9 @@ void Servidor::exportarJugadoresConectados(Jugador* conectados)
 void Servidor::exportarJugadoresEnEspera(Jugador* enEspera)
 {
 
-    int i=1;
+    int i=0;
     cola CAux;
-    while(!jugadoresEnEspera.esvacia() && i<=jugadoresEnEspera.longitud())
+    while(!jugadoresEnEspera.esvacia())
     {
         enEspera[i]=jugadoresEnEspera.primero();
         CAux.encolar(jugadoresEnEspera.primero());
@@ -398,9 +398,54 @@ void Servidor::exportarJugadoresEnEspera(Jugador* enEspera)
         i++;
     }
 
-    while(!CAux.esvacia()){
+    while(!CAux.esvacia())
+    {
         jugadoresEnEspera.encolar(CAux.primero());
         CAux.desencolar();
     }
 
+}
+
+bool Servidor::PerteneceCola(cadena nJ)
+{
+
+    bool Pertenece=false;
+    cola Caux;
+    while(!jugadoresEnEspera.esvacia() && !Pertenece)
+    {
+        if(strcmp(nJ,jugadoresEnEspera.primero().nombreJugador)==0)
+        {
+            Pertenece=true;
+        }
+        else
+        {
+            Caux.encolar(jugadoresEnEspera.primero());
+            jugadoresEnEspera.desencolar();
+        }
+    }
+
+    while(!Caux.esvacia()){
+        jugadoresEnEspera.encolar(Caux.primero());
+        Caux.desencolar();
+    }
+
+    return Pertenece;
+}
+
+bool Servidor::PerteneceLista(cadena nJ)
+{
+
+    bool pertenece=false;
+
+    int i=1;
+    while(i<=jugadoresConectados.longitud())
+    {
+        if(strcmp(nJ,jugadoresConectados.observar(i).nombreJugador)==0)
+        {
+            pertenece=true;
+        }
+        i++;
+    }
+
+    return pertenece;
 }

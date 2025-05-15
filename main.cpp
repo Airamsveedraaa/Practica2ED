@@ -81,22 +81,30 @@ void pruebaServidor()
         cout << "- " << enEspera[i].nombreJugador << endl;
     }
 
-    // Mostrar estado antes de desactivar
-    cout << "\n--- Estado Antes de Desactivar ---" << endl;
-    s.mostrarInformacion();
+    // Pruebas de los nuevos métodos
+cout << "\n--- Pruebas de los nuevos métodos ---" << endl;
 
-    // Desactivar servidor
-    cout << "\nDesactivando servidor..." << endl;
-    if (s.desactivar()) cout << "Servidor desactivado correctamente." << endl;
-    else cout << "Ya estaba inactivo." << endl;
+// Primero mostrar estado actual
+cout << "\nEstado actual:" << endl;
+cout << "Conectados: Ana, Pedro" << endl;
+cout << "En espera: Maria, Jose" << endl;
 
-    // Mostrar estado final
-    cout << "\n--- Estado Final ---" << endl;
-    s.mostrarInformacion();
+// Prueba PerteneceLista
+cout << "\nProbando PerteneceLista:" << endl;
+cout << "Ana (conectada): " << (s.PerteneceLista("Ana") ? "Sí" : "No") << endl;
+cout << "Pedro (conectado): " << (s.PerteneceLista("Pedro") ? "Sí" : "No") << endl;
+cout << "Maria (en espera): " << (s.PerteneceLista("Maria") ? "Sí" : "No") << endl;
+cout << "Jose (en espera): " << (s.PerteneceLista("Jose") ? "Sí" : "No") << endl;
+cout << "Juan (inexistente): " << (s.PerteneceLista("Juan") ? "Sí" : "No") << endl;
 
-    cout << "\n===== FIN DE PRUEBAS =====" << endl;
+// Prueba PerteneceCola
+cout << "\nProbando PerteneceCola:" << endl;
+cout << "Ana (conectada): " << (s.PerteneceCola("Ana") ? "Sí" : "No") << endl;
+cout << "Pedro (conectado): " << (s.PerteneceCola("Pedro") ? "Sí" : "No") << endl;
+cout << "Maria (en espera): " << (s.PerteneceCola("Maria") ? "Sí" : "No") << endl;
+cout << "Jose (en espera): " << (s.PerteneceCola("Jose") ? "Sí" : "No") << endl;
+cout << "Juan (inexistente): " << (s.PerteneceCola("Juan") ? "Sí" : "No") << endl;
 }
-
 int menu()
 {
     int opcion;
@@ -180,63 +188,79 @@ int main()
     while(opc != 9);
 
     return 0;
-}*/
+}
+*/
 
+
+#include "GestorServidores.h"
 #include <iostream>
 #include <cstring>
-#include "GestorServidores.h"
 
 using namespace std;
 
-int main() {
+Jugador crearJugador(const char* nombre, int id, bool activo, int latencia, long puntuacion, const char* pais) {
+    Jugador j;
+    strcpy(j.nombreJugador, nombre);
+    j.ID = id;
+    j.activo = activo;
+    j.latencia = latencia;
+    j.puntuacion = puntuacion;
+    strcpy(j.pais, pais);
+    return j;
+}
+
+void testGestorServidores() {
     GestorServidores gestor;
 
-    // Variables de entrada
-    cadena dS = "DataCenter1";
-    cadena lG1 = "Madrid";
-    cadena lG2 = "Barcelona";
-    cadena lG3 = "Valencia";
-    cadena lG4 = "Zaragoza";
+    // 1. Crear y desplegar tres servidores
+    cout << "\n== TEST 1: Despliegue de servidores ==" << endl;
+    gestor.desplegarServidor("192.168.0.1", "JuegoA", 1, 2, 1, 3000, "España");
+    gestor.desplegarServidor("192.168.0.2", "JuegoB", 2, 2, 1, 3001, "Chile");
+    gestor.desplegarServidor("192.168.0.3", "JuegoC", 3, 2, 1, 3002, "México");
 
-    cadena juego1 = "BattleZone";
-    cadena juego2 = "SkyWars";
-    cadena juego3 = "StarQuest";
-    cadena juego4 = "BattleZone"; // Duplicado
+    cout << "Servidores desplegados: " << gestor.getNumServidores() << " (esperado: 3)\n";
 
-    // 1. Insertar primer servidor
-    bool ok = gestor.desplegarServidor(dS, juego1, 101, 100, 10, 5, lG1);
-    cout << "Insertado 1: " << (ok ? "OK" : "Fallo") << endl;
+    // 2. Activar un servidor
+    cout << "\n== TEST 2: Activación de servidor ==" << endl;
+    gestor.conectarServidor("192.168.0.2");
+     bool activado = gestor.conectarServidor("192.168.0.2");
+    cout << "Servidor 192.168.0.2 activado: " << (activado ? "Sí ✅" : "No ❌") << endl;
 
-    // 2. Insertar con localizaci�n < primer nodo (Barcelona < Madrid) -> al principio
-    ok = gestor.desplegarServidor(dS, juego2, 102, 120, 12, 4, lG2);
-    cout << "Insertado 2 (al principio): " << (ok ? "OK" : "Fallo") << endl;
+    // 3. Alojamiento de jugadores (JuegoB)
+    cout << "\n== TEST 3: Alojamiento de jugadores en JuegoB ==" << endl;
+    bool enEspera;
+    cadena host;
+    for (int i = 1; i <= 4; i++) {
+        string nombre = "Jugador" + to_string(i);
+        Jugador j = crearJugador(nombre.c_str(), i, true, 30 + i, 1000 + i, "AR");
+        bool conectado = gestor.alojarJugador(j, "JuegoB", host, enEspera);
 
-    // 3. Insertar con localizaci�n > primer y segundo nodo (Valencia) -> al final
-    ok = gestor.desplegarServidor(dS, juego3, 103, 110, 8, 6, lG3);
-    cout << "Insertado 3 (al final): " << (ok ? "OK" : "Fallo") << endl;
-
-    // 4. Rechazar por ID duplicado
-    ok = gestor.desplegarServidor(dS, "AnotherGame", 101, 130, 10, 5, lG4);
-    cout << "Duplicado ID: " << (ok ? "OK" : "Rechazado") << endl;
-
-    // 5. Rechazar por nombre duplicado
-    ok = gestor.desplegarServidor(dS, juego4, 104, 130, 10, 5, lG4);
-    cout << "Duplicado nombre juego: " << (ok ? "OK" : "Rechazado") << endl;
-
-    // 6. Insertar en medio (Zaragoza)
-    ok = gestor.desplegarServidor(dS, "MegaCraft", 105, 140, 10, 5, lG4);
-    cout << "Insertado 4 (en medio): " << (ok ? "OK" : "Fallo") << endl;
-
-    // 7. Mostrar lista
-    cout << "\nServidores desplegados:\n";
-    Servidor* actual = gestor.getPrimerServidor();
-    cadena nombre, loc;
-    while (actual != nullptr) {
-        actual->getNombreJuego(nombre);
-        actual->getLocalizacionGeografica(loc);
-        cout << "- " << nombre << " [" << loc << "] (ID: " << actual->getId() << ")" << endl;
-        actual = actual->getSiguienteServidor();
+        cout << "  - " << nombre << ": ";
+        if (conectado) {
+            cout << "Conectado ✅ al servidor: " << host << endl;
+        } else if (enEspera) {
+            cout << "En espera 🕓 en el servidor: " << host << endl;
+        } else {
+            cout << "Rechazado ❌" << endl;
+        }
     }
 
+    // 4. Verificar estado de los jugadores
+    cout << "\n== TEST 4: Comprobación de estado de jugadores ==" << endl;
+    cout << "¿Jugador1 conectado? " << (gestor.jugadorConectado("Jugador1") ? "Sí ✅" : "No ❌") << endl;
+    cout << "¿Jugador4 en espera? " << (gestor.jugadorEnEspera("Jugador4") ? "Sí ✅" : "No ❌") << endl;
+
+    // 5. Eliminar servidor
+    cout << "\n== TEST 5: Eliminación de servidor ==" << endl;
+    bool eliminado = gestor.eliminarServidor("192.168.0.2");
+    cout << "Servidor eliminado: " << (eliminado ? "Sí ✅" : "No ❌") << endl;
+    cout << "Servidores restantes: " << gestor.getNumServidores() << " (esperado: 2)\n";
+
+    // 6. Verificar estado tras eliminación
+    cout << "¿Jugador2 sigue conectado? " << (gestor.jugadorConectado("Jugador2") ? "Sí ❌" : "No ✅") << endl;
+}
+
+int main() {
+    testGestorServidores();
     return 0;
 }
