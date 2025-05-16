@@ -116,7 +116,7 @@ bool GestorServidores::desplegarServidor(cadena dS, cadena nJ, int i, int mxL, i
                     }
                 }
             }
-        numServidores++;
+            numServidores++;
         }
 
     }
@@ -130,7 +130,7 @@ bool GestorServidores::desplegarServidor(cadena dS, cadena nJ, int i, int mxL, i
 bool GestorServidores::conectarServidor(cadena dS)
 {
 
-    bool exito;
+    bool exito=false;
     if(primerServidor==NULL)
     {
         exito=false; //error, no hay servidores
@@ -147,7 +147,8 @@ bool GestorServidores::conectarServidor(cadena dS)
             if(strcmp(dir,dS)==0)
             {
                 //Posicion encontrada, activamos server
-                exito=ServerAux->activar();
+                ServerAux->activar();
+                exito=true;
             }
             ServerAux=ServerAux->getSiguienteServidor();
         }
@@ -160,7 +161,7 @@ bool GestorServidores::conectarServidor(cadena dS)
 bool GestorServidores::realizarMantenimiento(cadena dS)
 {
 
-    bool exito;
+    bool exito=false;
     if(primerServidor==NULL)
     {
         exito=false; //error, no hay servidores
@@ -177,7 +178,8 @@ bool GestorServidores::realizarMantenimiento(cadena dS)
             if(strcmp(dir,dS)==0)
             {
                 //Posicion encontrada, activamos server
-                exito=ServerAux->ponerEnMantenimiento();
+                ServerAux->ponerEnMantenimiento();
+                exito=true;
             }
             ServerAux=ServerAux->getSiguienteServidor();
         }
@@ -228,57 +230,119 @@ bool GestorServidores::alojarJugador(Jugador j, cadena nomJuego, cadena host, bo
 {
     bool Alojado=false;
     Servidor* Aux=primerServidor;
+    Servidor* MejorServidorConexion=NULL;
+    int MaxEspacioConexion=-1; //variable para almacenar el vector con mayor diferencia entre jugadores alojados y jugadores maximos
+
+    //Primero encontrar servidor con
     while(Aux!=NULL)
     {
-        cadena nomJ;
-        Aux->getNombreJuego(nomJ);
-        if(strcmp(nomJ,nomJuego)==0)
+        cadena nomj;
+        Aux->getNombreJuego(nomj);
+        if(strcmp(nomj,nomJuego)==0 && Aux->estaActivo())
         {
-            if(Aux->estaActivo() && Aux->getMaxJugadoresConectados() > Aux->getNumJugadoresConectados())
+            int espacio= Aux->getMaxJugadoresConectados() - Aux->getNumJugadoresConectados();
+            if(espacio > MaxEspacioConexion)
             {
-                Aux->conectarJugador(j);
-                Aux->getDireccionServidor(host);
-                Alojado=true;
-                enEspera=false;
+                MaxEspacioConexion=espacio;
+                MejorServidorConexion=Aux;
             }
-            else if (Aux->getMaxJugadoresEnEspera() > Aux->getNumJugadoresEnEspera())
+        }
+        Aux=Aux->getSiguienteServidor();
+    }
+
+    if(MejorServidorConexion!=NULL && MaxEspacioConexion > 0)
+    {
+        //Si se cumple quiere decir que tengo espacio y el server esta activo correctamente
+        //Alojo jugador
+        MejorServidorConexion->conectarJugador(j);
+        MejorServidorConexion->getDireccionServidor(host);
+        Alojado=true;
+        enEspera=false;
+    }
+    else
+    {
+        //Si no lo aloja en el anterior, quiere decir que no hay espacio, buscamos el que mas hueco tenga en espera
+        Servidor* MejorServidorEspera=NULL;
+        int MaxEspacioEspera=-1;
+        Aux=primerServidor;
+
+        while(Aux!=NULL)
+        {
+            cadena nomj;
+            Aux->getNombreJuego(nomj);
+            if(strcmp(nomj,nomJuego)==0 && Aux->estaActivo())
             {
-                Aux->ponerJugadorEnEspera(j);
-                Aux->getDireccionServidor(host);
-                Alojado=false;
-                enEspera=true;
+                int espacio= Aux->getMaxJugadoresEnEspera() - Aux->getNumJugadoresEnEspera();
+                if(espacio > MaxEspacioEspera)
+                {
+                    MaxEspacioEspera=espacio;
+                    MejorServidorEspera=Aux;
+                }
             }
+            Aux=Aux->getSiguienteServidor();
+        }
+
+        if(MejorServidorEspera!=NULL && MaxEspacioEspera > 0)
+        {
+            MejorServidorEspera->ponerJugadorEnEspera(j);
+            MejorServidorEspera->getDireccionServidor(host);
+            cout << "DEBUG: Jugador " << j.nombreJugador << " encolado en " << host << endl;
+            Alojado=false;
+            enEspera=true;
         }
         else
         {
             Alojado=false;
             enEspera=false;
         }
-        Aux=Aux->getSiguienteServidor();
     }
+
     return Alojado;
 }
 
+bool GestorServidores::expulsarJugador(cadena nJ, cadena host)
+{
+
+    bool exito=false;
+
+    Servidor* Aux=primerServidor;
+
+    while(Aux!=NULL && !exito)
+    {
+        if(Aux->PerteneceLista(nJ) || Aux->PerteneceCola(nJ))
+        {
+            Aux->expulsarJugador(nJ);
+            Aux->getDireccionServidor(host);
+            exito=true;
+        }
+
+        Aux=Aux->getSiguienteServidor();
+    }
+    return exito;
+}
 
 int GestorServidores::getPosicionServidor(cadena dS)
 {
+    int Pos=-1; //valor a devolver, -1 por defecto
+    int p=1;    //valor para recorrer e ir actualizando
 
-    int p=1;
-    bool encontrado=false;
     Servidor* Aux=primerServidor;
-    while(p<=numServidores && !encontrado)
+
+    while(Aux!=NULL)
     {
         cadena aux;
         Aux->getDireccionServidor(aux);
         if(strcmp(aux,dS)==0)
         {
-            encontrado=true;
+            Pos=p;
         }
         else
+        {
             Aux=Aux->getSiguienteServidor();
-        p++;
+            p++;
+        }
     }
-    return p;
+    return Pos;
 }
 
 //MOSTRAR INFORMACION SERVIDORES AQUI
@@ -348,7 +412,7 @@ bool GestorServidores::jugadorConectado(cadena nJ)
         {
             PerteneceJ=true;
         }
-            Aux=Aux->getSiguienteServidor();
+        Aux=Aux->getSiguienteServidor();
     }
     if(PerteneceJ)
     {
@@ -389,11 +453,11 @@ Servidor* GestorServidores::getPrimerServidor()
 
 }
 
-Servidor* GestorServidores::getServidorP(int pos)
+/*Servidor* GestorServidores::getServidorP(int pos)
 {
 
 //¿? posible insertarlo ¿?
 
 
-}
+}*/
 

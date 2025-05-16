@@ -15,7 +15,7 @@
 	<windows.h>
 	<cstring>
 
-1747346885 source:c:\users\airam\desktop\practica2ed\src\servidor.cpp
+1747435474 source:c:\users\airam\desktop\practica2ed\src\servidor.cpp
 	"Servidor.h"
 
 1747068197 c:\users\airam\desktop\practica2ed\include\servidor.h
@@ -29,11 +29,11 @@
 1746197532 source:c:\users\airam\desktop\practica2ed\src\tadcola.cpp
 	"TADCola.h"
 
-1747351562 source:c:\users\airam\desktop\practica2ed\src\gestorservidores.cpp
+1747436818 source:c:\users\airam\desktop\practica2ed\src\gestorservidores.cpp
 	"GestorServidores.h"
 	"Servidor.h"
 
-1746954198 c:\users\airam\desktop\practica2ed\include\gestorservidores.h
+1747435777 c:\users\airam\desktop\practica2ed\include\gestorservidores.h
 	"Comun.h"
 	"Servidor.h"
 
