@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1747351472 source:c:\users\airam\desktop\practica2ed\main.cpp
+1747436963 source:c:\users\airam\desktop\practica2ed\main.cpp
 	"GestorServidores.h"
 	<iostream>
 	<cstring>
@@ -33,7 +33,7 @@
 	"GestorServidores.h"
 	"Servidor.h"
 
-1747435777 c:\users\airam\desktop\practica2ed\include\gestorservidores.h
+1747518558 c:\users\airam\desktop\practica2ed\include\gestorservidores.h
 	"Comun.h"
 	"Servidor.h"
 

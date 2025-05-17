@@ -191,40 +191,44 @@ bool GestorServidores::realizarMantenimiento(cadena dS)
 
 bool GestorServidores::eliminarServidor(cadena dS)
 {
+    bool exito=false;
+    Servidor* ServerAux=primerServidor->getSiguienteServidor(); //Servidor auxiliar para moverme, se usa despues de ver que no es el primer servidor
+    Servidor* Ant=primerServidor;
 
-    bool exito=true;
-    Servidor* ServerAux=primerServidor; //Servidor auxiliar para recorrer y encontrar posicion
     if(primerServidor==NULL)
     {
-
         exito=false; //no hay servidores
     }
-    else
+
+    //probar si es el primer servidor
+    cadena dir;
+    primerServidor->getDireccionServidor(dir);
+    if(strcmp(dir,dS)==0)
     {
-        //buscar servidor coincidente para eliminarlo
-        while(ServerAux->getSiguienteServidor()!=NULL)
-        {
-            cadena dir;
-            ServerAux->getDireccionServidor(dir);
-            if(strcmp(dir,dS)==0)
-            {
-                //Posicion encontrada, "eliminamos" server (mover posiciones)
-                Servidor* anterior=ServerAux->getSiguienteServidor();
-                ServerAux->setSiguienteServidor(anterior->getSiguienteServidor());
-                delete anterior;
-                numServidores--;
-            }
-            ServerAux=ServerAux->getSiguienteServidor();
-        }
-
-
+        Servidor* Borr=primerServidor;
+        primerServidor=primerServidor->getSiguienteServidor();
+        delete Borr;
+        numServidores--;
+        exito=true;
     }
 
-
+    //comprobar cual es el que hay que eliminar, pues no es el primero
+    while(ServerAux!=NULL)
+    {
+        ServerAux->getDireccionServidor(dir);
+        if(strcmp(dir,dS)==0)
+        {
+            Ant->setSiguienteServidor(ServerAux->getSiguienteServidor());
+            delete ServerAux;
+            numServidores--;
+            exito=true;
+        }
+        Ant=ServerAux;
+        ServerAux=ServerAux->getSiguienteServidor();
+    }
     return exito;
 }
 
-//ALOJAR Y DESCONECTAR JUGADOR AQUI
 
 bool GestorServidores::alojarJugador(Jugador j, cadena nomJuego, cadena host, bool &enEspera)
 {
@@ -444,20 +448,4 @@ bool GestorServidores::jugadorEnEspera(cadena nJ)
 
 
 }
-
-
-Servidor* GestorServidores::getPrimerServidor()
-{
-
-    return primerServidor;
-
-}
-
-/*Servidor* GestorServidores::getServidorP(int pos)
-{
-
-//¿? posible insertarlo ¿?
-
-
-}*/
 

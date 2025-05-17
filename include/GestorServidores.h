@@ -91,13 +91,13 @@ bool alojarJugador(Jugador j, cadena nomJuego, cadena host, bool &enEspera);
   devolviendo un false, junto con otro false a través del parámetro por referencia enEspera.*/
 
 bool expulsarJugador(cadena nJ, cadena host);
-//el método expulsará al jugador de nombre nJ de cualquier servidor o cola de espera del sistema
-//en la que esté ubicado. El método devolverá true en caso de localizar y expulsar al jugador
-//indicado, devolviendo además la dirección/hostname del servidor en el que estaba conectado o bien
-//a la espera de acceso al mismo; false en caso contrario, al no encontrarse en el sistema el jugador
-//indicado. Si el jugador en cuestión estaba conectado a un servidor, al ser expulsado habrá que
-//garantizar que, en caso de haber jugadores en cola de espera para acceder al mismo, el primero de
-//dicha estructura pase a ser alojado en este servidor de forma automática.
+/*el método expulsará al jugador de nombre nJ de cualquier servidor o cola de espera del sistema
+  en la que esté ubicado. El método devolverá true en caso de localizar y expulsar al jugador
+  indicado, devolviendo además la dirección/hostname del servidor en el que estaba conectado o bien
+  a la espera de acceso al mismo; false en caso contrario, al no encontrarse en el sistema el jugador
+  indicado. Si el jugador en cuestión estaba conectado a un servidor, al ser expulsado habrá que
+  garantizar que, en caso de haber jugadores en cola de espera para acceder al mismo, el primero de
+  dicha estructura pase a ser alojado en este servidor de forma automática.*/
 
 int getPosicionServidor(cadena dS);
 /*el método devolverá la posición en la que se encuentra el servidor cuya dirección/hostname es igual
@@ -131,13 +131,6 @@ bool jugadorEnEspera(cadena nJ);
 /*el método devolverá true si el jugador con nombre nJ está en la cola de espera de alguno de los
 servidores activos del sistema.*/
 
-//Metodos auxiliares
-
-Servidor* getPrimerServidor();
-//Devuelve el primer servidor
-
-Servidor* getServidorP(int pos);
-//Devuelve el servidor ubicado en la posicion pasada por parametro, con el objetivo de usar esa posicion para activar,desactivar,mantenimientos...
 
 };
 #endif // GESTORSERVIDORES_H_INCLUDED
