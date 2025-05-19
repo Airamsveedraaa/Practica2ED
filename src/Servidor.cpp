@@ -79,7 +79,7 @@ bool Servidor::conectarJugador(Jugador j)
 
     }
 
-    return exito; //pendiente
+    return exito;
 
 }
 

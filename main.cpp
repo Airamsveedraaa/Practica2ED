@@ -195,11 +195,9 @@ int main()
 #include "GestorServidores.h"
 #include <iostream>
 #include <cstring>
-
 using namespace std;
 
-Jugador crearJugador(const char* nombre, int id, bool activo, int latencia, long puntuacion, const char* pais)
-{
+Jugador crearJugador(const char* nombre, int id, bool activo, int latencia, long puntuacion, const char* pais) {
     Jugador j;
     strcpy(j.nombreJugador, nombre);
     j.ID = id;
@@ -210,88 +208,84 @@ Jugador crearJugador(const char* nombre, int id, bool activo, int latencia, long
     return j;
 }
 
-void testGestorServidores()
-{
+void testGestorServidores() {
     GestorServidores gestor;
-
-    // 1. Crear y desplegar tres servidores
-    cout << "\n== TEST 1: Despliegue de servidores ==" << endl;
-    gestor.desplegarServidor("192.168.0.1", "JuegoA", 1, 2, 1, 3000, "España");
-    gestor.desplegarServidor("192.168.0.2", "JuegoB", 2, 2, 1, 3001, "Chile");
-    gestor.desplegarServidor("192.168.0.3", "JuegoC", 3, 2, 1, 3002, "México");
-
-    cout << "Servidores desplegados: " << gestor.getNumServidores() << " (esperado: 3)\n";
-
-    // 2. Activar un servidor
-    cout << "\n== TEST 2: Activación de servidor ==" << endl;
-    gestor.conectarServidor("192.168.0.2");
-    bool activado = gestor.conectarServidor("192.168.0.2");
-    cout << "Servidor 192.168.0.2 activado: " << (activado ? "Sí ✅" : "No ❌") << endl;
-
-    // 3. Alojamiento de jugadores (JuegoB)
-    cout << "\n== TEST 3: Alojamiento de jugadores en JuegoB ==" << endl;
-    bool enEspera;
     cadena host;
-    for (int i = 1; i <= 4; i++)
-    {
-        string nombre = "Jugador" + to_string(i);
-        Jugador j = crearJugador(nombre.c_str(), i, true, 30 + i, 1000 + i, "AR");
-        bool conectado = gestor.alojarJugador(j, "JuegoB", host, enEspera);
+    bool enEspera;
 
+    // === TEST 1: Despliegue ===
+    cout << "\n== TEST 1: Despliegue de servidores ==" << endl;
+    gestor.desplegarServidor("192.168.0.1", "JuegoA", 1, 2, 2, 3000, "España");
+    gestor.desplegarServidor("192.168.0.2", "JuegoB", 2, 2, 2, 3001, "Chile");
+    gestor.desplegarServidor("192.168.0.3", "JuegoC", 3, 2, 2, 3002, "México");
+    bool rep1 = gestor.desplegarServidor("192.168.0.4", "JuegoB", 4, 2, 2, 3003, "Perú"); // nombre repetido
+    bool rep2 = gestor.desplegarServidor("192.168.0.5", "JuegoE", 1, 2, 2, 3004, "Brasil"); // ID repetido
+    cout << "Servidores desplegados: " << gestor.getNumServidores() << " (esperado: 2)" << endl;
+    cout << "Intento con nombre repetido: " << (rep1 ? "Error ❌" : "Correcto ✅") << endl;
+    cout << "Intento con ID repetido: " << (rep2 ? "Error ❌" : "Correcto ✅") << endl;
+
+    // === TEST 2: Activación y posición ===
+    cout << "\n== TEST 2: Activación y posición de servidores ==" << endl;
+    gestor.conectarServidor("192.168.0.1");
+    gestor.conectarServidor("192.168.0.2");
+    bool actFail = gestor.conectarServidor("192.168.0.9"); // No existe
+    cout << "Activación servidor inexistente: " << (actFail ? "Error ❌" : "Correcto ✅") << endl;
+    cout << "Posición de 192.168.0.2: " << gestor.getPosicionServidor("192.168.0.2") << " (esperado: 2)" << endl;
+    cout << "Posición de inexistente: " << gestor.getPosicionServidor("192.168.0.9") << " (esperado: -1)" << endl;
+
+    // === TEST 3: Alojamiento de jugadores ===
+    cout << "\n== TEST 3: Alojamiento de jugadores ==" << endl;
+    for (int i = 1; i <= 6; ++i) {
+        string nombre = "Jugador" + to_string(i);
+        Jugador j = crearJugador(nombre.c_str(), i, true, 20 + i, 1000 + i, "AR");
+        bool conectado = gestor.alojarJugador(j, "JuegoB", host, enEspera);
         cout << "  - " << nombre << ": ";
-        if (conectado)
-        {
-            cout << "Conectado ✅ al servidor: " << host << endl;
-        }
-        else if (enEspera)
-        {
-            cout << "En espera 🕓 en el servidor: " << host << endl;
-        }
-        else
-        {
-            cout << "Rechazado ❌" << endl;
-        }
+        if (conectado) cout << "Conectado ✅ en " << host << endl;
+        else if (enEspera) cout << "En espera 🕓 en " << host << endl;
+        else cout << "Rechazado ❌" << endl;
     }
 
-    // 4. Verificar estado de los jugadores
-    cout << "\n== TEST 4: Comprobación de estado de jugadores ==" << endl;
+    // === TEST 4: Estado de jugadores ===
+    cout << "\n== TEST 4: Estado de jugadores ==" << endl;
     cout << "¿Jugador1 conectado? " << (gestor.jugadorConectado("Jugador1") ? "Sí ✅" : "No ❌") << endl;
-    cout << "¿Jugador4 en espera? " << (gestor.jugadorEnEspera("Jugador4") ? "Sí ✅" : "No ❌") << endl;
+    cout << "¿Jugador6 en espera? " << (gestor.jugadorEnEspera("Jugador6") ? "Sí ✅" : "No ❌") << endl;
+    cout << "¿Jugador7 conectado? " << (gestor.jugadorConectado("Jugador7") ? "Sí ❌" : "No ✅") << endl;
 
-    // 5. Expulsión de jugadores
+    // === TEST 5: Expulsión ===
     cout << "\n== TEST 5: Expulsión de jugadores ==" << endl;
     cadena expulsadoDe;
-
-    bool expulsado1 = gestor.expulsarJugador("Jugador1", expulsadoDe);
-    cout << "Jugador1 expulsado de: " << (expulsado1 ? expulsadoDe : "N/A") << " → "
-         << (expulsado1 ? "✅" : "❌") << endl;
-
+    gestor.expulsarJugador("Jugador1", expulsadoDe);
+    cout << "Jugador1 expulsado de: " << expulsadoDe << endl;
     cout << "¿Jugador1 sigue conectado? " << (gestor.jugadorConectado("Jugador1") ? "Sí ❌" : "No ✅") << endl;
-    cout << "¿Jugador3 ahora conectado? " << (gestor.jugadorConectado("Jugador3") ? "Sí ✅" : "No ❌") << endl;
 
-    bool expulsado2 = gestor.expulsarJugador("Jugador4", expulsadoDe);
-    cout << "Jugador4 expulsado de cola: " << (expulsado2 ? expulsadoDe : "N/A") << " → "
-         << (expulsado2 ? "✅" : "❌") << endl;
-    cout << "¿Jugador4 en espera? " << (gestor.jugadorEnEspera("Jugador4") ? "Sí ❌" : "No ✅") << endl;
+    // === TEST 6: Desconectar servidor con migración ===
+    cout << "\n== TEST 6: Desconexión de servidor y migración de jugadores ==" << endl;
+    bool descon = gestor.desconetarServidor("192.168.0.2");
+    cout << "Servidor desconectado y jugadores migrados: " << (descon ? "Sí ✅" : "No ❌") << endl;
 
-    // 6. Eliminar servidor
-    cout << "\n== TEST 6: Eliminación de servidor ==" << endl;
-    bool eliminado = gestor.eliminarServidor("192.168.0.2");
-    cout << "Servidor eliminado: " << (eliminado ? "Sí ✅" : "No ❌") << endl;
-    cout << "Servidores restantes: " << gestor.getNumServidores() << " (esperado: 2)\n";
+    // === TEST 7: Mantenimiento y eliminación ===
+    cout << "\n== TEST 7: Mantenimiento y eliminación ==" << endl;
+    gestor.realizarMantenimiento("192.168.0.3");
+    bool elimActivo = gestor.eliminarServidor("192.168.0.1"); // aún activo
+    bool elimMant = gestor.eliminarServidor("192.168.0.3");
+    cout << "¿Activo eliminado? " << (elimActivo ? "Sí ❌" : "No ✅") << endl;
+    cout << "¿En mantenimiento eliminado? " << (elimMant ? "Sí ✅" : "No ❌") << endl;
+    cout << "Servidores restantes: " << gestor.getNumServidores() << endl;
 
-    // 7. Verificar estado tras eliminación
-    cout << "¿Jugador2 sigue conectado? " << (gestor.jugadorConectado("Jugador2") ? "Sí ❌" : "No ✅") << endl;
-    // 8. Expulsión de jugador inexistente
-    cout << "\n== TEST 7: Expulsión de jugador inexistente ==" << endl;
+    // === TEST 8: Jugador inexistente ===
+    cout << "\n== TEST 8: Jugador inexistente ==" << endl;
     cadena dummy;
-    bool expulsadoX = gestor.expulsarJugador("JugadorX", dummy);
-    cout << "JugadorX expulsado: " << (expulsadoX ? "Sí ❌" : "No ✅") << endl;
+    bool expX = gestor.expulsarJugador("JugadorX", dummy);
+    cout << "Expulsión de jugador inexistente: " << (expX ? "Sí ❌" : "No ✅") << endl;
+
+    // === TEST 9: Mostrar todos los servidores e info ===
+    cout << "\n== TEST 9: Información de servidores ==" << endl;
+    gestor.mostrarInformacionServidores(-1);
 }
 
-
-int main()
-{
+int main() {
     testGestorServidores();
     return 0;
 }
+
+

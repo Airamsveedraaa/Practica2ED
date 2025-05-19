@@ -124,7 +124,56 @@ bool GestorServidores::desplegarServidor(cadena dS, cadena nJ, int i, int mxL, i
     return exito;
 }
 
-//DESCONECTAR SERVIDOR AQUI
+
+bool GestorServidores::desconetarServidor(cadena dS)
+{
+
+    bool exito;
+    bool encontrado=false;
+    Servidor* Aux=primerServidor;
+
+    while(!encontrado && primerServidor!=NULL)
+    {
+        cadena dir;
+        Aux->getDireccionServidor(dir);
+        if(strcmp(dir,dS)==0)
+        {
+            //servidor encontrado
+            encontrado=true;
+            cadena nomj;
+            Aux->getNombreJuego(nomj);
+
+            int Max=Aux->getMaxJugadoresConectados();
+            Jugador *conectados=new Jugador[Aux->getMaxJugadoresConectados()];
+            Aux->exportarJugadoresConectados(conectados);
+            exito = Aux->desactivar();
+
+            //ordenar vector para distribucion ya ordenada
+            for(int i=0; i<Max; i++){
+                for(int j=i+1; j<Max; j++){
+                    if(conectados[i].latencia > conectados[j].latencia){
+                        Jugador temp=conectados[i];
+                        conectados[i]=conectados[j];
+                        conectados[j]=temp;
+                    }
+                }
+            }
+            //Distribucion de jugadores
+            for(int i=0; i<Max; i++)
+            {
+                cadena host;
+                bool enEspera;
+                alojarJugador(conectados[i],nomj,host,enEspera);
+            }
+            delete [] conectados;
+        }
+        else{
+            Aux=Aux->getSiguienteServidor();
+        }
+    }
+
+    return exito;
+}
 
 
 bool GestorServidores::conectarServidor(cadena dS)
@@ -192,39 +241,41 @@ bool GestorServidores::realizarMantenimiento(cadena dS)
 bool GestorServidores::eliminarServidor(cadena dS)
 {
     bool exito=false;
-    Servidor* ServerAux=primerServidor->getSiguienteServidor(); //Servidor auxiliar para moverme, se usa despues de ver que no es el primer servidor
-    Servidor* Ant=primerServidor;
 
     if(primerServidor==NULL)
     {
         exito=false; //no hay servidores
     }
-
-    //probar si es el primer servidor
-    cadena dir;
-    primerServidor->getDireccionServidor(dir);
-    if(strcmp(dir,dS)==0)
+    else
     {
-        Servidor* Borr=primerServidor;
-        primerServidor=primerServidor->getSiguienteServidor();
-        delete Borr;
-        numServidores--;
-        exito=true;
-    }
-
-    //comprobar cual es el que hay que eliminar, pues no es el primero
-    while(ServerAux!=NULL)
-    {
-        ServerAux->getDireccionServidor(dir);
-        if(strcmp(dir,dS)==0)
+        //probar si es el primer servidor
+        cadena dir;
+        primerServidor->getDireccionServidor(dir);
+        if(strcmp(dir,dS)==0 && !primerServidor->estaActivo())
         {
-            Ant->setSiguienteServidor(ServerAux->getSiguienteServidor());
-            delete ServerAux;
+            Servidor* Borr=primerServidor;
+            primerServidor=primerServidor->getSiguienteServidor();
+            delete Borr;
             numServidores--;
             exito=true;
         }
-        Ant=ServerAux;
-        ServerAux=ServerAux->getSiguienteServidor();
+
+        //comprobar cual es el que hay que eliminar, pues no es el primero
+        Servidor* ServerAux=primerServidor->getSiguienteServidor(); //Servidor auxiliar para moverme, se usa despues de ver que no es el primer servidor
+        Servidor* Ant=primerServidor;
+        while(ServerAux!=NULL)
+        {
+            ServerAux->getDireccionServidor(dir);
+            if(strcmp(dir,dS)==0 && !ServerAux->estaActivo())
+            {
+                Ant->setSiguienteServidor(ServerAux->getSiguienteServidor());
+                delete ServerAux;
+                numServidores--;
+                exito=true;
+            }
+            Ant=ServerAux;
+            ServerAux=ServerAux->getSiguienteServidor();
+        }
     }
     return exito;
 }
@@ -340,16 +391,45 @@ int GestorServidores::getPosicionServidor(cadena dS)
         {
             Pos=p;
         }
-        else
-        {
             Aux=Aux->getSiguienteServidor();
             p++;
-        }
     }
     return Pos;
 }
 
-//MOSTRAR INFORMACION SERVIDORES AQUI
+
+void GestorServidores::mostrarInformacionServidores(int pos)
+{
+
+    if(pos==-1)
+    {
+        Servidor* Aux=primerServidor;
+        int cont=1;
+        while(Aux!=NULL)
+        {
+            cout << "Servidor : " << cont << " ";
+            Aux->mostrarInformacion();
+            cout << endl;
+            Aux=Aux->getSiguienteServidor();
+            cont++;
+        }
+
+    }
+    else if (pos!=-1)
+    {
+        Servidor* Aux=primerServidor;
+        for(int i=0; i<=pos; i++)
+        {
+            Aux=Aux->getSiguienteServidor();
+        }
+        Aux->mostrarInformacion();
+    }
+    else
+    {
+        cout << "Posicion fuera de rango" << endl;
+    }
+
+}
 
 bool GestorServidores::jugadorConectado(cadena nJ,cadena dS)
 {

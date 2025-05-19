@@ -37,18 +37,18 @@ bool desplegarServidor(cadena dS, cadena nJ, int i, int mxL, int mxC, int p, cad
   el mismo nombre, o bien el mismo identificador que el nuevo elemento a integrar en la estructura.*/
 
 bool desconetarServidor(cadena dS);
-//el método intentará desconectar (poner en estado INACTIVO) el servidor cuya dirección/hostname
-//coincide con el valor indicado en el parámetro de entrada dS. Si el servidor a desactivar estaba
-//ACTIVO, será necesario expulsar a los jugadores que estaban en espera, y redirigir a los que estaban
-//ya alojados en el servidor a otros nodos activos del sistema con el mismo juego instalado. El
-//proceso de redistribución de los jugadores priorizará aquellos con menor tiempo de respuesta (ping).
-//La distribución se realizará de forma equitativa entre los distintos servidores activos del sistema,
-//esto es, cada jugador considerado será alojado en el servidor con el mayor número de espacios
-//disponibles en su correspondiente lista de jugadores conectados. El mismo criterio se seguirá en
-//caso de no poder alojar al jugador que toca al alguno de los servidores al estar todos llenos, y
-//tener que incluirlo en alguna cola de espera. Aquellos jugadores para los que no haya espacios
-//disponibles en alguno de los servidores, ni en ninguna de las colas de espera, serán expulsados
-//del sistema.
+/*el método intentará desconectar (poner en estado INACTIVO) el servidor cuya dirección/hostname
+  coincide con el valor indicado en el parámetro de entrada dS. Si el servidor a desactivar estaba
+  ACTIVO, será necesario expulsar a los jugadores que estaban en espera, y redirigir a los que estaban
+  ya alojados en el servidor a otros nodos activos del sistema con el mismo juego instalado. El
+  proceso de redistribución de los jugadores priorizará aquellos con menor tiempo de respuesta (ping).
+  La distribución se realizará de forma equitativa entre los distintos servidores activos del sistema,
+  esto es, cada jugador considerado será alojado en el servidor con el mayor número de espacios
+  disponibles en su correspondiente lista de jugadores conectados. El mismo criterio se seguirá en
+  caso de no poder alojar al jugador que toca al alguno de los servidores al estar todos llenos, y
+  tener que incluirlo en alguna cola de espera. Aquellos jugadores para los que no haya espacios
+  disponibles en alguno de los servidores, ni en ninguna de las colas de espera, serán expulsados
+  del sistema.*/
 
 bool conectarServidor(cadena dS);
 /*el método permite activas (poner en estado ACTIVO) el servidor cuya dirección/hostname coincide
@@ -63,12 +63,12 @@ bool realizarMantenimiento(cadena dS);
   dicho estado, o bien porque directamente no existía ningún nodo con la dirección/hostname indicado.*/
 
 bool eliminarServidor(cadena dS);
-//el método eliminará de la estructura de nodos enlazados el servidor cuya dirección/hostname coincide
+/*el método eliminará de la estructura de nodos enlazados el servidor cuya dirección/hostname coincide
 //con el valor indicado en el parámetro de entrada dS. Este método es aplicable solamente sobre
 //aquellos servidores en estado INACTIVO o MANTENIMIENTO. El método devolverá true en caso de
 //eliminarse de forma exitosa el servidor indicado; falso en caso contrario, esto es, cuando no
 //exista ningún nodo con la dirección/hostname indicado, o bien el servidor afectado no esté INACTIVO
-//o en MANTENIMIENTO.
+//o en MANTENIMIENTO.*/
 
 bool alojarJugador(Jugador j, cadena nomJuego, cadena host, bool &enEspera);
 /*el método intentará alojar al jugador (tipo Jugador) j en algún servidor ACTIVO para el juego de
