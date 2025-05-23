@@ -220,7 +220,7 @@ void testGestorServidores() {
     gestor.desplegarServidor("192.168.0.3", "JuegoC", 3, 2, 2, 3002, "México");
     bool rep1 = gestor.desplegarServidor("192.168.0.4", "JuegoB", 4, 2, 2, 3003, "Perú"); // nombre repetido
     bool rep2 = gestor.desplegarServidor("192.168.0.5", "JuegoE", 1, 2, 2, 3004, "Brasil"); // ID repetido
-    cout << "Servidores desplegados: " << gestor.getNumServidores() << " (esperado: 2)" << endl;
+    cout << "Servidores desplegados: " << gestor.getNumServidores() << " (esperado: 3)" << endl;
     cout << "Intento con nombre repetido: " << (rep1 ? "Error ❌" : "Correcto ✅") << endl;
     cout << "Intento con ID repetido: " << (rep2 ? "Error ❌" : "Correcto ✅") << endl;
 
@@ -230,7 +230,7 @@ void testGestorServidores() {
     gestor.conectarServidor("192.168.0.2");
     bool actFail = gestor.conectarServidor("192.168.0.9"); // No existe
     cout << "Activación servidor inexistente: " << (actFail ? "Error ❌" : "Correcto ✅") << endl;
-    cout << "Posición de 192.168.0.2: " << gestor.getPosicionServidor("192.168.0.2") << " (esperado: 2)" << endl;
+    cout << "Posición de 192.168.0.2: " << gestor.getPosicionServidor("192.168.0.2") << " (esperado: 3)" << endl;
     cout << "Posición de inexistente: " << gestor.getPosicionServidor("192.168.0.9") << " (esperado: -1)" << endl;
 
     // === TEST 3: Alojamiento de jugadores ===

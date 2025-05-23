@@ -149,9 +149,12 @@ bool GestorServidores::desconetarServidor(cadena dS)
             exito = Aux->desactivar();
 
             //ordenar vector para distribucion ya ordenada
-            for(int i=0; i<Max; i++){
-                for(int j=i+1; j<Max; j++){
-                    if(conectados[i].latencia > conectados[j].latencia){
+            for(int i=0; i<Max; i++)
+            {
+                for(int j=i+1; j<Max; j++)
+                {
+                    if(conectados[i].latencia > conectados[j].latencia)
+                    {
                         Jugador temp=conectados[i];
                         conectados[i]=conectados[j];
                         conectados[j]=temp;
@@ -167,7 +170,8 @@ bool GestorServidores::desconetarServidor(cadena dS)
             }
             delete [] conectados;
         }
-        else{
+        else
+        {
             Aux=Aux->getSiguienteServidor();
         }
     }
@@ -364,7 +368,10 @@ bool GestorServidores::expulsarJugador(cadena nJ, cadena host)
 
     while(Aux!=NULL && !exito)
     {
-        if(Aux->PerteneceLista(nJ) || Aux->PerteneceCola(nJ))
+        //obtenemos direccion de cada servidor para comprobar si el jugador a eliminar esta en la lista o cola del que comprobemos en cada instante
+        cadena direcc;
+        Aux->getDireccionServidor(direcc);
+        if(jugadorConectado(nJ,direcc) || jugadorEnEspera(nJ,direcc))
         {
             Aux->expulsarJugador(nJ);
             Aux->getDireccionServidor(host);
@@ -391,8 +398,8 @@ int GestorServidores::getPosicionServidor(cadena dS)
         {
             Pos=p;
         }
-            Aux=Aux->getSiguienteServidor();
-            p++;
+        Aux=Aux->getSiguienteServidor();
+        p++;
     }
     return Pos;
 }
@@ -444,8 +451,20 @@ bool GestorServidores::jugadorConectado(cadena nJ,cadena dS)
         Aux->getDireccionServidor(aux);
         if(strcmp(aux,dS)==0)
         {
-            if(Aux->PerteneceLista(nJ))
-                PerteneceJ=true;
+            //Servidor encontrado, exportamos los jugadores a un vector auxiliar para recorrer comparando
+            int max=Aux->getMaxJugadoresConectados();
+            Jugador* conectados=new Jugador[max];
+            Aux->exportarJugadoresConectados(conectados);
+            int i=0;
+            while(!PerteneceJ && i<max)
+            {
+                if(strcmp(conectados[i].nombreJugador,nJ)==0)
+                {
+                    PerteneceJ=true;
+                }
+                i++;
+            }
+            delete [] conectados;
         }
         Aux=Aux->getSiguienteServidor();
     }
@@ -469,8 +488,18 @@ bool GestorServidores::jugadorEnEspera(cadena nJ, cadena dS)
         Aux->getDireccionServidor(aux);
         if(strcmp(aux,dS)==0)
         {
-            if(Aux->PerteneceCola(nJ))
-                PerteneceJ=true;
+            //Servidor encontrado, exportamos cola
+            int max=Aux->getMaxJugadoresEnEspera();
+            Jugador* enCola=new Jugador[max];
+            Aux->exportarJugadoresEnEspera(enCola);
+            int i=0;
+            while(!PerteneceJ && i<max){
+                if(strcmp(enCola[i].nombreJugador,nJ)==0){
+                    PerteneceJ=true;
+                }
+                i++;
+            }
+            delete [] enCola;
         }
         Aux=Aux->getSiguienteServidor();
     }
@@ -492,7 +521,7 @@ bool GestorServidores::jugadorConectado(cadena nJ)
     {
         cadena direcc;
         Aux->getDireccionServidor(direcc);
-        if(Aux->PerteneceLista(nJ))
+        if(jugadorConectado(nJ,direcc))
         {
             PerteneceJ=true;
         }
