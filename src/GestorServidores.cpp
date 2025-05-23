@@ -45,6 +45,7 @@ bool GestorServidores::desplegarServidor(cadena dS, cadena nJ, int i, int mxL, i
 
     if(ServidorActual==NULL)
     {
+        cout << "No hay espacio para desplegar el nuevo servidor" << endl;
         exito=false; //no hay memoria para añadir el servidor
     }
 
@@ -58,10 +59,12 @@ bool GestorServidores::desplegarServidor(cadena dS, cadena nJ, int i, int mxL, i
             Actual->getNombreJuego(nomJ);
             if(Actual->getId()==i)
             {
+                cout << "Ya existe un servidor con esa ID" << endl;
                 exito=false; //mismo id
             }
             else if(strcmp(nomJ,nJ)==0)
             {
+                cout << "Ya existe un servidor que aloje ese Juego" << endl;
                 exito=false; //mismo nombre de juego
             }
 
@@ -128,11 +131,11 @@ bool GestorServidores::desplegarServidor(cadena dS, cadena nJ, int i, int mxL, i
 bool GestorServidores::desconetarServidor(cadena dS)
 {
 
-    bool exito;
+    bool exito=false;
     bool encontrado=false;
     Servidor* Aux=primerServidor;
 
-    while(!encontrado && primerServidor!=NULL)
+    while(Aux!=NULL && !encontrado)
     {
         cadena dir;
         Aux->getDireccionServidor(dir);
@@ -214,7 +217,7 @@ bool GestorServidores::conectarServidor(cadena dS)
 bool GestorServidores::realizarMantenimiento(cadena dS)
 {
 
-    bool exito=false;
+    bool exito;
     if(primerServidor==NULL)
     {
         exito=false; //error, no hay servidores
@@ -230,9 +233,8 @@ bool GestorServidores::realizarMantenimiento(cadena dS)
             ServerAux->getDireccionServidor(dir);
             if(strcmp(dir,dS)==0)
             {
-                //Posicion encontrada, activamos server
-                ServerAux->ponerEnMantenimiento();
-                exito=true;
+                //Posicion encontrada, ponemos en mantenimiento el server
+                exito=ServerAux->ponerEnMantenimiento();
             }
             ServerAux=ServerAux->getSiguienteServidor();
         }
@@ -264,22 +266,26 @@ bool GestorServidores::eliminarServidor(cadena dS)
             exito=true;
         }
 
-        //comprobar cual es el que hay que eliminar, pues no es el primero
-        Servidor* ServerAux=primerServidor->getSiguienteServidor(); //Servidor auxiliar para moverme, se usa despues de ver que no es el primer servidor
-        Servidor* Ant=primerServidor;
-        while(ServerAux!=NULL)
+        else
         {
-            ServerAux->getDireccionServidor(dir);
-            if(strcmp(dir,dS)==0 && !ServerAux->estaActivo())
+            //comprobar cual es el que hay que eliminar, pues no es el primero
+            Servidor* ServerAux=primerServidor->getSiguienteServidor(); //Servidor auxiliar para moverme, se usa despues de ver que no es el primer servidor
+            Servidor* Ant=primerServidor;
+            while(ServerAux!=NULL)
             {
-                Ant->setSiguienteServidor(ServerAux->getSiguienteServidor());
-                delete ServerAux;
-                numServidores--;
-                exito=true;
+                ServerAux->getDireccionServidor(dir);
+                if(strcmp(dir,dS)==0 && !ServerAux->estaActivo())
+                {
+                    Ant->setSiguienteServidor(ServerAux->getSiguienteServidor());
+                    delete ServerAux;
+                    numServidores--;
+                    exito=true;
+                }
+                Ant=ServerAux;
+                ServerAux=ServerAux->getSiguienteServidor();
             }
-            Ant=ServerAux;
-            ServerAux=ServerAux->getSiguienteServidor();
         }
+
     }
     return exito;
 }
@@ -401,7 +407,7 @@ int GestorServidores::getPosicionServidor(cadena dS)
         Aux=Aux->getSiguienteServidor();
         p++;
     }
-    return Pos;
+    return p;
 }
 
 
@@ -493,8 +499,10 @@ bool GestorServidores::jugadorEnEspera(cadena nJ, cadena dS)
             Jugador* enCola=new Jugador[max];
             Aux->exportarJugadoresEnEspera(enCola);
             int i=0;
-            while(!PerteneceJ && i<max){
-                if(strcmp(enCola[i].nombreJugador,nJ)==0){
+            while(!PerteneceJ && i<max)
+            {
+                if(strcmp(enCola[i].nombreJugador,nJ)==0)
+                {
                     PerteneceJ=true;
                 }
                 i++;

@@ -254,12 +254,15 @@ void Servidor::mostrarInformacion()
          << "\nDireccion: " << direccionServidor
          << "\nIdentificador: " << id
          << "\nMaximo de jugadores en linea simultaneos : " << maxJugadoresConectados
-         << "\nNumero real de jugadores en linea simultaneos : " << jugadoresConectados.longitud()
-         << "\nMaximo de jugadores en espera: " << maxJugadoresEnEspera
-         << "\nNumero real de jugadores en espera: " << jugadoresEnEspera.longitud()
-         << "\nPuerto de escucha: " << puerto
+         << "\nMaximo de jugadores en espera: " << maxJugadoresEnEspera;
+         if(estaActivo()){
+         cout << "\nNumero real de jugadores en linea simultaneos : " << jugadoresConectados.longitud()
+              << "\nNumero real de jugadores en espera: " << jugadoresEnEspera.longitud();
+         }
+         cout << "\nPuerto de escucha: " << puerto
          << "\nLatencia media: " << latmedia
          << "\nUbicacion geografica: " << localizacionGeografica
+         << "\nEstado del servidor: " << estado
          << "\n---------------------------------------------------" << endl;
 
 }
