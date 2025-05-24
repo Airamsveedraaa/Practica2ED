@@ -1,6 +1,6 @@
 #include "GestorServidores.h"
 
-Jugador crearJugador(const char* nombre, int id, bool activo, int latencia, long puntuacion, const char* pais)
+Jugador crearJugador(cadena nombre, int id, bool activo, int latencia, long puntuacion, cadena pais)
 {
     Jugador j;
     strcpy(j.nombreJugador, nombre);
@@ -38,6 +38,7 @@ int menu()
 
 int main()
 {
+    srand(time(0));
     int opc;
     GestorServidores Gestor;
     do
@@ -52,19 +53,30 @@ int main()
             cadena direccion;
             cout << "Introduzca la direccion/hostname del servidor a mostrar (ALL para mostrar todos): " << endl;
             cin >> direccion;
-            int pos=Gestor.getPosicionServidor(direccion);
-            if(strcmp(direccion,"ALL")==0)
+
+            if(strcmp(direccion, "ALL") == 0)
             {
-                if(Gestor.getNumServidores() > 0){
-                Gestor.mostrarInformacionServidores(-1);
+                if(Gestor.getNumServidores() > 0)
+                {
+                    Gestor.mostrarInformacionServidores(-1);
                 }
                 else
+                {
                     cout << "No hay servidores para mostrar" << endl;
+                }
             }
             else
             {
-                int pos=Gestor.getPosicionServidor(direccion);
-                Gestor.mostrarInformacionServidores(pos);
+                int pos = Gestor.getPosicionServidor(direccion);
+
+                if(pos == -1)
+                {
+                    cout << "No existe ningun servidor con esa direccion/hostname " << endl;
+                }
+                else
+                {
+                    Gestor.mostrarInformacionServidores(pos);
+                }
             }
         }
         break;
@@ -160,7 +172,8 @@ int main()
 
             bool mantenimiento=Gestor.realizarMantenimiento(direccion);
 
-            if(mantenimiento){
+            if(mantenimiento)
+            {
                 cout << "Mantenimiento programado con exito" << endl;
             }
             else
@@ -169,15 +182,77 @@ int main()
 
             }
 
-        } break;
+        }
+        break;
 
         case 7:
         {
+            cadena nombreJugador;
+            cout << "Introduzca el nick del jugador a conectar: " << endl;
+            cin >> nombreJugador;
 
-        } break;
+            if(Gestor.jugadorConectado(nombreJugador))
+            {
+                cout << "Error, el jugador con nick " << nombreJugador << " ya se encuentra conectado al sistema" << endl;
+            }
+
+            else
+            {
+                int ID,latencia,puntuacion;
+                cadena Pais;
+                cadena nombreJuego;
+                bool activo=true;
+                cout << "El jugador no se encuentra conectado al sistema actualmente, introduzca los datos del jugador a conectar: ";
+                cout << "ID: " << endl;
+                cin >> ID;
+                cout << "Pais desde el que se conecta al sistema: " << endl;
+                cin >> Pais;
+                cout << "Nombre del juego que va a jugar: " << endl;
+                cin >> nombreJuego;
+                latencia = 1 + rand() % 500;
+                puntuacion= rand() % 100000;
+
+                Jugador J1=crearJugador(nombreJugador,ID,activo,latencia,puntuacion,Pais);
+
+                //intentar conectar al jugador
+
+                cadena host;
+                bool enEspera;
+                bool conectado=Gestor.alojarJugador(J1,nombreJuego,host,enEspera);
+                if(conectado && !enEspera)
+                {
+                    cout << "Jugador " << nombreJugador << " conectado con exito al servidor con direccion/hostname: " << host;
+                }
+
+                else if(!conectado && enEspera)
+                {
+                    cout << "Jugador " << nombreJugador << " conectado a la cola de espera del servidor " << host << " con exito";
+                }
+                else
+                {
+                    cout << "El Jugador no ha podido ser conectado a ningun servidor activo para el juego indicado por falta de espacio";
+                }
+            }
+
+        }
+        break;
 
         case 8:
         {
+
+            cadena nick;
+            cadena host;
+            cout << "Introduzca el nick del jugador a expulsar: " << endl;
+            cin >> nick;
+
+            if(!Gestor.jugadorConectado(nick) && !Gestor.jugadorEnEspera(nick)){
+                cout << "El jugador no se encuentra en el sistema" << endl;
+            }
+
+            else{
+                    Gestor.expulsarJugador(nick,host);
+                cout << "Jugador expulsado con exito del servidor: " << host << endl;
+            }
 
         } break;
 

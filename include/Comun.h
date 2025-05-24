@@ -1,9 +1,10 @@
 #ifndef COMUN_H_INCLUDED
 #define COMUN_H_INCLUDED
-#include <iostream>
-#include <windows.h>
-#include <cstring>
-#include <string.h>
+#include <iostream> //cin cout
+#include <windows.h> //system cls system pause
+#include <cstring> //manejo de cadenas
+#include <cstdlib> //rand y srand
+#include <ctime> //time
 #define PAUSE system("pause");
 #define CLS system("cls");
 typedef char cadena [50];

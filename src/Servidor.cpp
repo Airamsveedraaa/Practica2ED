@@ -110,14 +110,23 @@ void Servidor::mostrarJugadoresConectados()
 
     int longi=jugadoresConectados.longitud();
 
-    cout << "Datos de los jugadores conectados: ";
-    for(int i=1; i<=longi; i++)
+    if(longi==0)
     {
-        cout << jugadoresConectados.observar(i).nombreJugador
-             << "\n" << jugadoresConectados.observar(i).ID
-             << "\n" << jugadoresConectados.observar(i).latencia
-             << "\n" << jugadoresConectados.observar(i).puntuacion
-             << "\n" << jugadoresConectados.observar(i).pais << endl;
+        cout << "No hay jugadores conectados actualmente" << endl;
+    }
+    else
+    {
+        cout << "Datos de los jugadores conectados: ";
+        for(int i=1; i<=longi; i++)
+        {
+            cout << "Jugador: " << i
+                 << "\nNick: " << jugadoresConectados.observar(i).nombreJugador
+                 << "\nID: " << jugadoresConectados.observar(i).ID
+                 <<  "\nEstado: " << (jugadoresConectados.observar(i).activo ? "Activo" : "Inactivo")
+                 << "\nLatencia: " << jugadoresConectados.observar(i).latencia
+                 << "\nPuntuacion: " << jugadoresConectados.observar(i).puntuacion
+                 << "\nPais desde el que se ha conectado: " << jugadoresConectados.observar(i).pais << endl;
+        }
     }
 
 }
@@ -134,16 +143,20 @@ void Servidor::mostrarJugadoresEnEspera()
     }
     else
     {
+        int i=0;
         cout << "Datos de los jugadores en cola de espera : ";
         while(!jugadoresEnEspera.esvacia())
         {
-            cout << jugadoresEnEspera.primero().nombreJugador
-                 << "\n" << jugadoresEnEspera.primero().ID
-                 << "\n" << jugadoresEnEspera.primero().latencia
-                 << "\n" << jugadoresEnEspera.primero().puntuacion
-                 << "\n" << jugadoresEnEspera.primero().pais << endl;
+            cout << "Jugador: " << i+1
+                 << "\nNick: " << jugadoresEnEspera.primero().nombreJugador
+                 << "\nID: " << jugadoresEnEspera.primero().ID
+                 << "\nEstado: " << (jugadoresEnEspera.primero().activo ? "Activo" : "Inactivo")
+                 << "\nLatencia: " << jugadoresEnEspera.primero().latencia
+                 << "\nPuntuacion: " << jugadoresEnEspera.primero().puntuacion
+                 << "\nPais desde el que se ha conectado: " << jugadoresEnEspera.primero().pais << endl;
             Caux.encolar(jugadoresEnEspera.primero());
             jugadoresEnEspera.desencolar();
+            i++;
         }
         while(!Caux.esvacia())  //restablezco orden original de la cola
         {
@@ -255,11 +268,16 @@ void Servidor::mostrarInformacion()
          << "\nIdentificador: " << id
          << "\nMaximo de jugadores en linea simultaneos : " << maxJugadoresConectados
          << "\nMaximo de jugadores en espera: " << maxJugadoresEnEspera;
-         if(estaActivo()){
-         cout << "\nNumero real de jugadores en linea simultaneos : " << jugadoresConectados.longitud()
-              << "\nNumero real de jugadores en espera: " << jugadoresEnEspera.longitud();
-         }
-         cout << "\nPuerto de escucha: " << puerto
+    if(estaActivo())
+    {
+        cout << "\nNumero real de jugadores en linea simultaneos : " << jugadoresConectados.longitud()
+             << "\nJugadores conectados: "<< endl;
+        mostrarJugadoresConectados();
+        cout << "Numero real de jugadores en espera: " << jugadoresEnEspera.longitud()
+             << "\nJugadores en espera de ser conectados: " << endl;
+        mostrarJugadoresEnEspera();
+    }
+    cout << "\nPuerto de escucha: " << puerto
          << "\nLatencia media: " << latmedia
          << "\nUbicacion geografica: " << localizacionGeografica
          << "\nEstado del servidor: " << estado

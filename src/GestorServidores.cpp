@@ -298,7 +298,7 @@ bool GestorServidores::alojarJugador(Jugador j, cadena nomJuego, cadena host, bo
     Servidor* MejorServidorConexion=NULL;
     int MaxEspacioConexion=-1; //variable para almacenar el vector con mayor diferencia entre jugadores alojados y jugadores maximos
 
-    //Primero encontrar servidor con
+    //Primero encontrar servidor con mayor espacio en la lista de conectados
     while(Aux!=NULL)
     {
         cadena nomj;
@@ -351,7 +351,6 @@ bool GestorServidores::alojarJugador(Jugador j, cadena nomJuego, cadena host, bo
         {
             MejorServidorEspera->ponerJugadorEnEspera(j);
             MejorServidorEspera->getDireccionServidor(host);
-            cout << "DEBUG: Jugador " << j.nombreJugador << " encolado en " << host << endl;
             Alojado=false;
             enEspera=true;
         }
@@ -407,7 +406,7 @@ int GestorServidores::getPosicionServidor(cadena dS)
         Aux=Aux->getSiguienteServidor();
         p++;
     }
-    return p;
+    return Pos;
 }
 
 
@@ -416,6 +415,11 @@ void GestorServidores::mostrarInformacionServidores(int pos)
 
     if(pos==-1)
     {
+        if(primerServidor==NULL){
+
+            cout << "No hay servidores desplegados" << endl;
+        }
+        else{
         Servidor* Aux=primerServidor;
         int cont=1;
         while(Aux!=NULL)
@@ -428,18 +432,20 @@ void GestorServidores::mostrarInformacionServidores(int pos)
         }
 
     }
-    else if (pos!=-1)
+    }
+    else if (pos < 1 || pos > numServidores)
     {
+         cout << "Posicion fuera de rango" << endl;
+    }
+    else
+    {
+
         Servidor* Aux=primerServidor;
-        for(int i=0; i<=pos; i++)
+        for(int i=1; i<pos; i++)
         {
             Aux=Aux->getSiguienteServidor();
         }
         Aux->mostrarInformacion();
-    }
-    else
-    {
-        cout << "Posicion fuera de rango" << endl;
     }
 
 }
