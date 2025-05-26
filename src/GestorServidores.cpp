@@ -4,7 +4,7 @@
 GestorServidores::GestorServidores()
 {
 
-    primerServidor=NULL; //inicializo al primer puntero ¿?
+    primerServidor=NULL; //inicializo al primer puntero ï¿½?
 
     numServidores=0; //al inicio 0 elementos efectivos
 
@@ -46,25 +46,25 @@ bool GestorServidores::desplegarServidor(cadena dS, cadena nJ, int i, int mxL, i
     if(ServidorActual==NULL)
     {
         cout << "No hay espacio para desplegar el nuevo servidor" << endl;
-        exito=false; //no hay memoria para añadir el servidor
+        exito=false; //no hay memoria para aï¿½adir el servidor
     }
 
     else
     {
         //comprobaciones
         Servidor* Actual=primerServidor; //Servidor auxiliar para movernos entre nodos
-        cadena nomJ;
+        cadena dirr;
         while(Actual!=NULL)
         {
-            Actual->getNombreJuego(nomJ);
+            Actual->getDireccionServidor(dirr);
             if(Actual->getId()==i)
             {
                 cout << "Ya existe un servidor con esa ID" << endl;
                 exito=false; //mismo id
             }
-            else if(strcmp(nomJ,nJ)==0)
+            else if(strcmp(dS,dirr)==0)
             {
-                cout << "Ya existe un servidor que aloje ese Juego" << endl;
+                cout << "Ya existe un servidor con esa direccion" << endl;
                 exito=false; //mismo nombre de juego
             }
 
@@ -303,7 +303,7 @@ bool GestorServidores::alojarJugador(Jugador j, cadena nomJuego, cadena host, bo
     {
         cadena nomj;
         Aux->getNombreJuego(nomj);
-        if(strcmp(nomj,nomJuego)==0 && Aux->estaActivo())
+        if(Aux->estaActivo() && strcmp(nomj,nomJuego)==0)
         {
             int espacio= Aux->getMaxJugadoresConectados() - Aux->getNumJugadoresConectados();
             if(espacio > MaxEspacioConexion)
@@ -315,11 +315,10 @@ bool GestorServidores::alojarJugador(Jugador j, cadena nomJuego, cadena host, bo
         Aux=Aux->getSiguienteServidor();
     }
 
-    if(MejorServidorConexion!=NULL && MaxEspacioConexion > 0)
+    if(MejorServidorConexion!=NULL && MejorServidorConexion->conectarJugador(j))
     {
         //Si se cumple quiere decir que tengo espacio y el server esta activo correctamente
         //Alojo jugador
-        MejorServidorConexion->conectarJugador(j);
         MejorServidorConexion->getDireccionServidor(host);
         Alojado=true;
         enEspera=false;
@@ -335,7 +334,7 @@ bool GestorServidores::alojarJugador(Jugador j, cadena nomJuego, cadena host, bo
         {
             cadena nomj;
             Aux->getNombreJuego(nomj);
-            if(strcmp(nomj,nomJuego)==0 && Aux->estaActivo())
+            if( Aux->estaActivo() && strcmp(nomj,nomJuego)==0)
             {
                 int espacio= Aux->getMaxJugadoresEnEspera() - Aux->getNumJugadoresEnEspera();
                 if(espacio > MaxEspacioEspera)
@@ -347,9 +346,8 @@ bool GestorServidores::alojarJugador(Jugador j, cadena nomJuego, cadena host, bo
             Aux=Aux->getSiguienteServidor();
         }
 
-        if(MejorServidorEspera!=NULL && MaxEspacioEspera > 0)
+        if(MejorServidorEspera!=NULL && MejorServidorEspera->ponerJugadorEnEspera(j))
         {
-            MejorServidorEspera->ponerJugadorEnEspera(j);
             MejorServidorEspera->getDireccionServidor(host);
             Alojado=false;
             enEspera=true;
@@ -371,14 +369,11 @@ bool GestorServidores::expulsarJugador(cadena nJ, cadena host)
 
     Servidor* Aux=primerServidor;
 
-    while(Aux!=NULL && !exito)
+    while(!exito && Aux!=NULL)
     {
         //obtenemos direccion de cada servidor para comprobar si el jugador a eliminar esta en la lista o cola del que comprobemos en cada instante
-        cadena direcc;
-        Aux->getDireccionServidor(direcc);
-        if(jugadorConectado(nJ,direcc) || jugadorEnEspera(nJ,direcc))
+        if(Aux->expulsarJugador(nJ))
         {
-            Aux->expulsarJugador(nJ);
             Aux->getDireccionServidor(host);
             exito=true;
         }
@@ -455,7 +450,7 @@ bool GestorServidores::jugadorConectado(cadena nJ,cadena dS)
 
     bool exito=false;
     bool PerteneceJ=false;
-//primero, encontrar el servidor con dicha cadena ¿?
+//primero, encontrar el servidor con dicha cadena ï¿½?
     Servidor* Aux=primerServidor;
     while(Aux!=NULL && !exito)
     {

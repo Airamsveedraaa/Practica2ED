@@ -139,5 +139,40 @@ int lista::posicion(Jugador e)
  return (encontrado?v:-1);
 }
 
+void lista::anadirDch(Jugador e){
 
+insertar(n+1,e);
+
+}
+
+void lista::anadirIzq(Jugador e){
+
+insertar(1,e);
+
+}
+
+
+void lista::eliminarDch(){
+
+eliminar(n);
+
+}
+
+void lista::eliminarIzq(){
+
+eliminar(1);
+
+}
+
+Jugador lista::observarIzq(){
+
+return observar(1);
+
+}
+
+Jugador lista::observarDch(){
+
+return observar(n);
+
+}
 

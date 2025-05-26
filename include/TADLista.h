@@ -24,8 +24,8 @@ public:
     void anadirDch(Jugador e);
     void eliminarIzq();
     void eliminarDch();
-    float observarIzq();
-    float observarDch();
+    Jugador observarIzq();
+    Jugador observarDch();
     void concatenar(lista l);
     bool pertenece(Jugador e);
     void insertar(int i, Jugador e);

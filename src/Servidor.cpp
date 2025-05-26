@@ -91,13 +91,14 @@ bool Servidor::ponerJugadorEnEspera(Jugador j)
     int longi1=jugadoresEnEspera.longitud(); //Longitud de la cola de jugadores en espera
     int longi2=jugadoresConectados.longitud(); //Longitud de la lista de jugadores conectados
 
-    if(longi2!=maxJugadoresConectados || longi1==maxJugadoresEnEspera)
+    if(longi2 == maxJugadoresConectados && longi1 < maxJugadoresEnEspera)
     {
-        exito=false;
+        jugadoresEnEspera.encolar(j);
+        exito=true;
     }
     else
     {
-        jugadoresEnEspera.encolar(j);
+        exito=false;
     }
 
     return exito;
@@ -316,23 +317,25 @@ bool Servidor::expulsarJugador(cadena nombre)
     //comprobar si el jugador a eliminar esta en la lista de jugadores conectados.
     if(!exito)
     {
-        while(i<=jugadoresConectados.longitud())
+        int longi=jugadoresConectados.longitud();
+        while(!exito && i<=longi)
         {
             if(strcmp(jugadoresConectados.observar(i).nombreJugador,nombre)==0)
             {
                 //jugador encontrado en la lista, procedemos a eliminarlo
                 jugadoresConectados.eliminar(i);
+                                    //despues de eliminar, comprobar si hay jugadores en espera para ser conectados al servidor
+            if(!jugadoresEnEspera.esvacia() && jugadoresConectados.longitud() < maxJugadoresConectados)
+            {
+                Jugador nuevo=jugadoresEnEspera.primero();
+                jugadoresEnEspera.desencolar();
+                conectarJugador(nuevo);
+                }
                 exito=true;
             }
             else
                 i++;
         }
-    }
-    //despues de eliminar, comprobar si hay jugadores en espera para ser conectados al servidor
-    if(!jugadoresEnEspera.esvacia() && exito)
-    {
-        jugadoresConectados.insertar(i+1,jugadoresEnEspera.primero());
-        jugadoresEnEspera.desencolar();
     }
     return exito;
 }
